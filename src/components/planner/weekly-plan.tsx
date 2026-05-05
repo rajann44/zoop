@@ -69,7 +69,7 @@ export function WeeklyPlanSection() {
                 const meal = day[slot];
                 const portionHint = getPortionHint(meal, plan.profile.goal);
                 return (
-                  <div key={`${day.day}-${slot}`} className="rounded-lg border border-border bg-background p-3">
+                  <div key={`${day.day}-${slot}`} className="surface-inset rounded-xl p-3">
                     <div className="mb-2 flex items-center justify-between">
                       <Badge variant="outline">{toTitleCase(slot)}</Badge>
                       <span className="text-xs text-muted-foreground">{meal.prepTimeMin}m</span>

@@ -12,6 +12,7 @@ const CALORIE_DISTRIBUTION: Record<MealType, number> = {
 };
 
 const DIET_RANK: Record<DietType, number> = {
+  vegan: 0,
   vegetarian: 1,
   eggetarian: 2,
   "non-vegetarian": 3,

@@ -2,6 +2,22 @@ import type { SampleProfile } from "@/types/planner";
 
 export const SAMPLE_PROFILES: SampleProfile[] = [
   {
+    id: "assam-vegan-maintenance",
+    label: "Assam vegan female (maintenance)",
+    profile: {
+      state: "Assam",
+      dietType: "vegan",
+      proteinFocus: "moderate",
+      mealStyle: "traditional",
+      age: 28,
+      sex: "female",
+      weightKg: 58,
+      heightCm: 160,
+      activityLevel: "light",
+      goal: "maintenance",
+    },
+  },
+  {
     id: "haryana-veg-high-protein",
     label: "Haryana vegetarian male (maintenance)",
     profile: {

@@ -1,5 +1,24 @@
 export const INDIAN_STATES = [
+  "Andhra Pradesh",
+  "Arunachal Pradesh",
+  "Assam",
+  "Bihar",
+  "Chhattisgarh",
+  "Goa",
+  "Himachal Pradesh",
   "Haryana",
+  "Jharkhand",
+  "Madhya Pradesh",
+  "Manipur",
+  "Meghalaya",
+  "Mizoram",
+  "Nagaland",
+  "Odisha",
+  "Sikkim",
+  "Telangana",
+  "Tripura",
+  "Uttar Pradesh",
+  "Uttarakhand",
   "Punjab",
   "Delhi",
   "Rajasthan",
@@ -12,7 +31,7 @@ export const INDIAN_STATES = [
 ] as const;
 
 export const MEAL_TYPES = ["breakfast", "lunch", "dinner", "snack"] as const;
-export const DIET_TYPES = ["vegetarian", "eggetarian", "non-vegetarian"] as const;
+export const DIET_TYPES = ["vegan", "vegetarian", "eggetarian", "non-vegetarian"] as const;
 export const PROTEIN_FOCUS = ["low", "moderate", "high"] as const;
 export const MEAL_STYLES = [
   "homely",

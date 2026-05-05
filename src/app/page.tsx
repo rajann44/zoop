@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { RenderingModeToggle } from "@/components/rendering-mode-toggle";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,7 +11,10 @@ export default function Home() {
       <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col px-3 py-4 sm:px-6 sm:py-6">
         <div className="glass mb-8 flex items-center justify-between rounded-[22px] px-4 py-3 sm:mb-12 sm:px-5">
           <p className="font-serif text-xl">Saada Meal Planner</p>
-          <ThemeToggle />
+          <div className="flex items-center gap-2">
+            <RenderingModeToggle />
+            <ThemeToggle />
+          </div>
         </div>
 
         <section className="grid gap-4 sm:gap-6 md:grid-cols-[1fr_340px] md:items-start">

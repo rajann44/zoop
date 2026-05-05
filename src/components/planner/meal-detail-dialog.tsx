@@ -33,39 +33,39 @@ export function MealDetailDialog({ meal, goal, open, onOpenChange }: MealDetailD
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{meal.name}</DialogTitle>
+          <DialogTitle className="max-w-[92%] text-xl leading-tight">{meal.name}</DialogTitle>
           <DialogDescription>
             {toTitleCase(meal.mealType)} • {meal.prepTimeMin} min prep
           </DialogDescription>
         </DialogHeader>
 
-        <div className="grid grid-cols-2 gap-3 text-sm sm:grid-cols-4">
-          <div className="rounded-md bg-muted p-3">
+        <div className="grid grid-cols-2 gap-2.5 text-sm sm:grid-cols-4 sm:gap-3">
+          <div className="glass-soft rounded-xl p-3">
             <div className="text-xs text-muted-foreground">kcal</div>
             <div className="font-semibold">{meal.kcal}</div>
           </div>
-          <div className="rounded-md bg-muted p-3">
+          <div className="glass-soft rounded-xl p-3">
             <div className="text-xs text-muted-foreground">Protein</div>
             <div className="font-semibold">{meal.protein} g</div>
           </div>
-          <div className="rounded-md bg-muted p-3">
+          <div className="glass-soft rounded-xl p-3">
             <div className="text-xs text-muted-foreground">Carbs</div>
             <div className="font-semibold">{meal.carbs} g</div>
           </div>
-          <div className="rounded-md bg-muted p-3">
+          <div className="glass-soft rounded-xl p-3">
             <div className="text-xs text-muted-foreground">Fat</div>
             <div className="font-semibold">{meal.fat} g</div>
           </div>
         </div>
 
         {portionHint ? (
-          <div className="rounded-md border border-border bg-muted p-3 text-sm">
+          <div className="glass-soft rounded-xl p-3 text-sm">
             <span className="text-muted-foreground">Suggested serving for your goal: </span>
             <span className="font-medium text-foreground">{portionHint}</span>
           </div>
         ) : null}
 
-        <div>
+        <div className="surface-inset rounded-xl p-3">
           <h4 className="mb-2 text-sm font-semibold">Ingredients</h4>
           <ul className="space-y-1 text-sm text-muted-foreground">
             {meal.ingredients.map((ingredient) => (

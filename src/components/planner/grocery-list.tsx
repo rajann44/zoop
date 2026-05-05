@@ -18,7 +18,7 @@ export function GroceryList() {
         {INGREDIENT_CATEGORIES.map((category) => {
           const items = grocery[category];
           return (
-            <details key={category} className="group rounded-md border border-border bg-background" open={category === "Vegetables"}>
+            <details key={category} className="surface-inset group rounded-xl" open={category === "Vegetables"}>
               <summary className="flex cursor-pointer list-none items-center justify-between px-3 py-2 text-sm font-medium">
                 {category}
                 <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform group-open:rotate-180" />
@@ -27,7 +27,7 @@ export function GroceryList() {
                 {items.length ? (
                   <ul className="space-y-2 text-sm">
                     {items.map((item) => (
-                      <li key={item.key} className="flex items-center justify-between rounded-md border border-border px-3 py-2">
+                      <li key={item.key} className="glass-soft flex items-center justify-between rounded-lg px-3 py-2">
                         <span>{item.name}</span>
                         <span className="text-muted-foreground">
                           {Math.round(item.quantity * 10) / 10} {item.unit}

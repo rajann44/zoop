@@ -5,6 +5,7 @@ import { NutritionSummary } from "@/components/planner/nutrition-summary";
 import { PantryManager } from "@/components/planner/pantry-manager";
 import { ProfileForm } from "@/components/planner/profile-form";
 import { WeeklyPlanSection } from "@/components/planner/weekly-plan";
+import { RenderingModeToggle } from "@/components/rendering-mode-toggle";
 import { ThemeToggle } from "@/components/theme-toggle";
 
 export function PlannerShell() {
@@ -16,7 +17,10 @@ export function PlannerShell() {
             <h1 className="font-serif text-xl">Saada Meal Planner</h1>
             <p className="text-sm text-muted-foreground">Weekly Indian plan + grocery list for one person</p>
           </div>
-          <ThemeToggle />
+          <div className="flex items-center gap-2">
+            <RenderingModeToggle />
+            <ThemeToggle />
+          </div>
         </div>
       </header>
 
