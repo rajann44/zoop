@@ -1,4 +1,4 @@
-# Saada Meal Planner
+# zoop
 
 A production-quality MVP built with Next.js App Router, TypeScript, Tailwind CSS, shadcn-style components, and Zustand.
 

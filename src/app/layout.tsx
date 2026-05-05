@@ -18,9 +18,9 @@ const siteUrl = getSiteUrl();
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: "Saada Meal Planner",
+  title: "zoop",
   description: "Minimal weekly Indian meal planner and grocery generator",
-  applicationName: "Saada Meal Planner",
+  applicationName: "zoop",
   keywords: ["meal planner", "indian meals", "weekly grocery list", "vegan", "nutrition"],
   alternates: {
     canonical: "/",
@@ -28,13 +28,13 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     url: siteUrl,
-    title: "Saada Meal Planner",
+    title: "zoop",
     description: "Plan weekly Indian meals and get a pantry-aware grocery list.",
-    siteName: "Saada Meal Planner",
+    siteName: "zoop",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Saada Meal Planner",
+    title: "zoop",
     description: "Plan weekly Indian meals and get a pantry-aware grocery list.",
   },
 };

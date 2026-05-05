@@ -11,7 +11,7 @@ export default function Home() {
       <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col px-3 py-4 sm:px-6 sm:py-6">
         <div className="glass mb-8 flex items-center justify-between rounded-[22px] px-4 py-3 sm:mb-12 sm:px-5">
           <Link href="/planner" className="rounded-lg px-1 py-0.5 font-serif text-xl transition-opacity hover:opacity-85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
-            Saada Meal Planner
+            zoop
           </Link>
           <div className="flex items-center gap-2">
             <RenderingModeToggle />
