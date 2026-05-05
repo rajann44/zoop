@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { GroceryList } from "@/components/planner/grocery-list";
 import { NutritionSummary } from "@/components/planner/nutrition-summary";
 import { PantryManager } from "@/components/planner/pantry-manager";
@@ -13,10 +14,10 @@ export function PlannerShell() {
     <div className="liquid-canvas min-h-screen pb-8 sm:pb-10">
       <header className="sticky top-0 z-20 px-3 pt-3 sm:px-4 sm:pt-4">
         <div className="glass mx-auto flex max-w-7xl items-center justify-between rounded-[22px] px-4 py-3 sm:px-6">
-          <div>
+          <Link href="/" className="rounded-lg px-1 py-0.5 transition-opacity hover:opacity-85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
             <h1 className="font-serif text-xl">Saada Meal Planner</h1>
             <p className="text-sm text-muted-foreground">Weekly Indian plan + grocery list for one person</p>
-          </div>
+          </Link>
           <div className="flex items-center gap-2">
             <RenderingModeToggle />
             <ThemeToggle />

@@ -6,15 +6,15 @@ It generates a practical weekly Indian meal plan for one person and a merged gro
 
 ## Highlights
 
-- 10 Indian state preferences: Haryana, Punjab, Delhi, Rajasthan, Gujarat, Maharashtra, Tamil Nadu, Karnataka, Kerala, West Bengal
-- 67 realistic predefined meals with nutrition and ingredient details
+- 28 Indian state preferences and vegan/vegetarian/eggetarian/non-vegetarian support
+- Expanded predefined Indian meals with nutrition and ingredient details (including vegan set)
 - Deterministic recommendation scoring with regenerate support
 - Mifflin-St Jeor calories + activity multipliers
 - Goal and protein-focus based protein targets
-- Weekly grocery list merged and grouped by category
-- Pantry staples toggle to exclude owned essentials
+- Weekly grocery list split into to-buy vs pantry-covered items
+- Pantry staples + dynamic pack suggestions from Open Food Facts
 - Sample personas for instant testing
-- Light/dark mode and responsive, minimal UI
+- Light/dark mode, rendering mode toggle, responsive liquid-glass inspired UI
 
 ## Tech Stack
 
@@ -41,6 +41,16 @@ npm run lint
 npm run build
 npm run start
 ```
+
+## Deploy on Vercel
+
+1. Import this repository in Vercel.
+2. Set **Environment Variable**:
+   - `NEXT_PUBLIC_SITE_URL` = your production URL (e.g. `https://zoop.vercel.app`)
+3. Build command: `npm run build`
+4. Output: default Next.js output
+
+This app includes `robots` and `sitemap` metadata routes and uses `NEXT_PUBLIC_SITE_URL` for canonical and OG metadata.
 
 ## Core User Flow
 
@@ -92,7 +102,7 @@ Types live in `src/types/planner.ts`.
 
 ## Seed Data
 
-- Meals: `src/data/meals.ts` (67 meals)
+- Meals: `src/data/meals.ts`
 - States: `src/data/states.ts`
 - Pantry staples: `src/data/pantry.ts`
 - Sample personas: `src/data/sample-profiles.ts`
@@ -119,6 +129,6 @@ src/
 
 ## Notes
 
-- No API, no DB, no auth in this MVP
+- No DB, no auth in this MVP
 - Code is modular for future Supabase/Postgres integration
-- Uses only predefined test data for meal planning
+- Uses predefined meal data for planning and Open Food Facts for pantry pack suggestions

@@ -45,6 +45,8 @@ body {
   background: radial-gradient(1200px 640px at 4% 0%, #b7d8ff 0%, transparent 52%),
     radial-gradient(1100px 650px at 100% 0%, #82c6ff 0%, transparent 50%),
     radial-gradient(900px 540px at 50% 100%, #6fa8ff 0%, transparent 56%), var(--background);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
   color: var(--foreground);
   font-family: var(--font-sans), sans-serif;
   min-height: 100vh;
@@ -60,18 +62,21 @@ body {
   background: radial-gradient(1000px 600px at 10% 0%, #17345b 0%, transparent 56%),
     radial-gradient(900px 520px at 100% 10%, #11406c 0%, transparent 56%),
     radial-gradient(1000px 560px at 50% 100%, #0f2a4a 0%, transparent 58%), var(--background);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 
 .liquid-canvas {
   position: relative;
   isolation: isolate;
-  overflow: hidden;
+  overflow-x: clip;
+  overflow-y: visible;
 }
 
 .liquid-canvas::before,
 .liquid-canvas::after {
   content: "";
-  position: absolute;
+  position: fixed;
   pointer-events: none;
   z-index: -1;
   border-radius: 9999px;
@@ -96,6 +101,14 @@ body {
   right: -8vw;
   top: 8vh;
   background: radial-gradient(circle at 40% 35%, #8ec6ffb3 0%, #5f9eff82 46%, transparent 70%);
+}
+
+.dark .liquid-canvas::before {
+  background: radial-gradient(circle at 30% 30%, #4a79b59e 0%, #2f5f9890 46%, transparent 72%);
+}
+
+.dark .liquid-canvas::after {
+  background: radial-gradient(circle at 40% 35%, #2b5f98b5 0%, #1d3f6c8a 44%, transparent 70%);
 }
 
 .glass {
