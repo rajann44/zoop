@@ -1,64 +1,59 @@
-import Image from "next/image";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="liquid-canvas min-h-screen">
+      <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col px-3 py-4 sm:px-6 sm:py-6">
+        <div className="glass mb-8 flex items-center justify-between rounded-[22px] px-4 py-3 sm:mb-12 sm:px-5">
+          <p className="font-serif text-xl">Saada Meal Planner</p>
+          <ThemeToggle />
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+
+        <section className="grid gap-4 sm:gap-6 md:grid-cols-[1fr_340px] md:items-start">
+          <div className="glass rounded-[22px] p-5 sm:p-8">
+            <div className="space-y-4 sm:space-y-5">
+              <p className="text-xs uppercase tracking-[0.15em] text-muted-foreground sm:text-sm">Weekly planning for one person</p>
+              <h1 className="max-w-2xl font-serif text-3xl leading-tight tracking-tight sm:text-5xl">
+              Personalized Indian meal plans and a practical grocery list, in minutes.
+              </h1>
+              <p className="max-w-xl text-sm text-muted-foreground sm:text-lg">
+              Built for real home cooking. Set your state, diet, protein preference, and body goals to generate a clean 7-day plan from curated meals.
+              </p>
+              <div className="flex flex-col gap-2 pt-1 sm:flex-row sm:gap-3 sm:pt-2">
+                <Button asChild size="lg" className="w-full sm:w-auto">
+                  <Link href="/planner">
+                    Start planning
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
+                </Button>
+                <Button asChild variant="outline" size="lg" className="w-full sm:w-auto">
+                  <Link href="/planner">View sample plan</Link>
+                </Button>
+              </div>
+            </div>
+          </div>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>What you get</CardTitle>
+              <CardDescription>Deterministic, pantry-aware meal planning with nutrition targets.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3 text-sm text-muted-foreground">
+              <p>- Daily calories from Mifflin-St Jeor + activity multiplier</p>
+              <p>- Goal-aligned protein target and practical meal combinations</p>
+              <p>- Grocery list grouped by category with quantity merge</p>
+              <p>- Haryana-forward dataset with 10 Indian state preferences</p>
+            </CardContent>
+          </Card>
+        </section>
+
+        <footer className="mt-auto px-1 pt-8 text-xs text-muted-foreground sm:pt-10">
+          Designed for calm weekly meal prep. No accounts, no database, no noise.
+        </footer>
       </main>
     </div>
   );

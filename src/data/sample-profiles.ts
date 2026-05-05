@@ -1,0 +1,52 @@
+import type { SampleProfile } from "@/types/planner";
+
+export const SAMPLE_PROFILES: SampleProfile[] = [
+  {
+    id: "haryana-veg-high-protein",
+    label: "Haryana vegetarian male (maintenance)",
+    profile: {
+      state: "Haryana",
+      dietType: "vegetarian",
+      proteinFocus: "high",
+      mealStyle: "homely",
+      age: 29,
+      sex: "male",
+      weightKg: 72,
+      heightCm: 173,
+      activityLevel: "moderate",
+      goal: "maintenance",
+    },
+  },
+  {
+    id: "delhi-eggetarian-fat-loss",
+    label: "Delhi eggetarian female (fat loss)",
+    profile: {
+      state: "Delhi",
+      dietType: "eggetarian",
+      proteinFocus: "moderate",
+      mealStyle: "quick-cook",
+      age: 31,
+      sex: "female",
+      weightKg: 60,
+      heightCm: 162,
+      activityLevel: "light",
+      goal: "fat loss",
+    },
+  },
+  {
+    id: "karnataka-nonveg-muscle-gain",
+    label: "Karnataka non-veg male (muscle gain)",
+    profile: {
+      state: "Karnataka",
+      dietType: "non-vegetarian",
+      proteinFocus: "high",
+      mealStyle: "high-protein",
+      age: 27,
+      sex: "male",
+      weightKg: 80,
+      heightCm: 178,
+      activityLevel: "moderate",
+      goal: "muscle gain",
+    },
+  },
+];

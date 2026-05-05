@@ -1,36 +1,124 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Saada Meal Planner
 
-## Getting Started
+A production-quality MVP built with Next.js App Router, TypeScript, Tailwind CSS, shadcn-style components, and Zustand.
 
-First, run the development server:
+It generates a practical weekly Indian meal plan for one person and a merged grocery list from deterministic seed data (no AI meal generation, no database, no auth).
+
+## Highlights
+
+- 10 Indian state preferences: Haryana, Punjab, Delhi, Rajasthan, Gujarat, Maharashtra, Tamil Nadu, Karnataka, Kerala, West Bengal
+- 67 realistic predefined meals with nutrition and ingredient details
+- Deterministic recommendation scoring with regenerate support
+- Mifflin-St Jeor calories + activity multipliers
+- Goal and protein-focus based protein targets
+- Weekly grocery list merged and grouped by category
+- Pantry staples toggle to exclude owned essentials
+- Sample personas for instant testing
+- Light/dark mode and responsive, minimal UI
+
+## Tech Stack
+
+- Next.js `16` with App Router
+- TypeScript
+- Tailwind CSS `v4`
+- Zustand for state management
+- Radix primitives + utility components (`shadcn/ui` style)
+
+## Quick Start
+
+```bash
+npm install
+npm run dev
+```
+
+Open `http://localhost:3000`.
+
+## Scripts
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm run lint
+npm run build
+npm run start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Core User Flow
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. Choose state, diet, protein focus, meal style, and body profile
+2. App calculates calorie and protein targets
+3. Planner builds a 7-day meal plan (breakfast/lunch/dinner/snack)
+4. Grocery list merges all weekly ingredients for 1 person
+5. Pantry toggles remove owned staples from the list
+6. Regenerate creates another valid week combination from seed data
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Recommendation Logic (Deterministic)
 
-## Learn More
+Implemented in `src/lib/planner-engine.ts`.
 
-To learn more about Next.js, take a look at the following resources:
+Each candidate meal is scored by:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **State match**: strong boost when meal contains selected state tag
+- **Diet compatibility**: strict filter (vegetarian < eggetarian < non-veg)
+- **Meal style match**: boost for homely/budget/high-protein/quick-cook/traditional fit
+- **Protein preference fit**: compares meal protein level with selected focus
+- **Calorie suitability**: closeness to meal-slot calorie share target
+- **Ingredient reuse**: boosts repeated core ingredients to reduce waste
+- **Diversity penalties**: discourages repeating identical meals too often
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Selection uses seeded weighted randomness from top-scoring candidates so regeneration stays valid yet varied.
 
-## Deploy on Vercel
+## Nutrition Calculations
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Implemented in `src/lib/nutrition.ts`.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **BMR (Mifflin-St Jeor)**
+  - Male: `10*kg + 6.25*cm - 5*age + 5`
+  - Female: `10*kg + 6.25*cm - 5*age - 161`
+- **Calories**: `BMR * activity_multiplier` with goal adjustment
+  - Fat loss: `-350`
+  - Maintenance: `0`
+  - Muscle gain: `+250`
+- **Protein target**: weight-based g/kg by goal + protein focus modifier
+
+## Data Model
+
+Types live in `src/types/planner.ts`.
+
+- `UserProfile`
+- `Meal`
+- `Ingredient`
+- `WeeklyPlan`
+- `GroceryItem`
+
+## Seed Data
+
+- Meals: `src/data/meals.ts` (67 meals)
+- States: `src/data/states.ts`
+- Pantry staples: `src/data/pantry.ts`
+- Sample personas: `src/data/sample-profiles.ts`
+
+Included meal examples: poha, upma, besan chilla, paneer bhurji, egg bhurji, dal chawal, rajma chawal, chole rice, roti sabzi, curd rice, khichdi, paneer curry, chicken curry, bhindi sabzi, aloo gobi, moong dal cheela, oats egg omelette, dahi, fruit bowl, roasted chana, peanut chaat, and more.
+
+Haryana coverage is intentionally strong and realistic for a solo home-cooking weekly cycle.
+
+## App Structure
+
+```text
+src/
+  app/
+    page.tsx              # Landing
+    planner/page.tsx      # Planner entry
+  components/
+    planner/*             # Planner UI modules
+    ui/*                  # Reusable UI primitives
+  data/*                  # Seed datasets
+  lib/*                   # Nutrition, planning, grocery utilities
+  store/planner-store.ts  # Zustand state and actions
+  types/planner.ts        # Domain models
+```
+
+## Notes
+
+- No API, no DB, no auth in this MVP
+- Code is modular for future Supabase/Postgres integration
+- Uses only predefined test data for meal planning
