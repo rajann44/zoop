@@ -20,7 +20,6 @@ export function WeeklyPlanSection() {
   const plan = usePlannerStore((state) => state.weeklyPlan);
   const isGenerating = usePlannerStore((state) => state.isGenerating);
   const nutritionTargets = usePlannerStore((state) => state.nutritionTargets);
-  const groceryByCategory = usePlannerStore((state) => state.groceryByCategory);
   const [selectedMeal, setSelectedMeal] = useState<Meal | null>(null);
   const [open, setOpen] = useState(false);
   const dayTrackRef = useRef<HTMLDivElement | null>(null);
@@ -82,7 +81,7 @@ export function WeeklyPlanSection() {
               variant="secondary"
               size="sm"
               className="h-9 w-full rounded-xl sm:w-auto"
-              onClick={() => exportWeeklyPlanPdf({ plan, targets: nutritionTargets, groceryByCategory })}
+              onClick={() => exportWeeklyPlanPdf({ plan, targets: nutritionTargets })}
             >
               <FileDown className="mr-1.5 h-4 w-4" />
               {t.planner.weeklyPlan.exportPdf}

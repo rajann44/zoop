@@ -1,12 +1,26 @@
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
-import type { GroceryByCategory, WeeklyPlan, NutritionTargets } from "@/types/planner";
+import type { WeeklyPlan, NutritionTargets } from "@/types/planner";
 import { toTitleCase } from "@/lib/utils";
 
 type ExportWeeklyPlanPdfInput = {
   plan: WeeklyPlan;
   targets: NutritionTargets;
-  groceryByCategory: GroceryByCategory;
+};
+
+const COLORS = {
+  ink: [24, 40, 61] as [number, number, number],
+  muted: [96, 118, 145] as [number, number, number],
+  hairline: [218, 228, 240] as [number, number, number],
+  headerFill: [236, 242, 250] as [number, number, number],
+  cardFill: [245, 249, 255] as [number, number, number],
+};
+
+const TWO_COL_LABEL_WIDTH = 190;
+const NUTRITION_COL_WIDTHS = {
+  metric: 140,
+  target: 120,
+  planAvg: 120,
 };
 
 function formatDate(value: Date) {
@@ -17,13 +31,13 @@ function formatDate(value: Date) {
   });
 }
 
-function formatQuantity(value: number) {
-  return Number.isInteger(value) ? String(value) : String(Math.round(value * 10) / 10);
+function buildFileName(now: Date) {
+  return `zoop-weekly-plan-${now.toISOString().slice(0, 10)}.pdf`;
 }
 
-function buildFileName(now: Date) {
-  const datePart = now.toISOString().slice(0, 10);
-  return `zoop-weekly-plan-${datePart}.pdf`;
+function formatDelta(value: number, unit: string) {
+  const rounded = Math.round(value);
+  return `${rounded >= 0 ? "+" : ""}${rounded} ${unit}`;
 }
 
 function addPageNumbers(doc: jsPDF) {
@@ -31,127 +45,115 @@ function addPageNumbers(doc: jsPDF) {
   for (let page = 1; page <= pages; page += 1) {
     doc.setPage(page);
     doc.setFontSize(9);
-    doc.setTextColor(114, 129, 148);
-    doc.text(`Page ${page} of ${pages}`, doc.internal.pageSize.getWidth() - 44, doc.internal.pageSize.getHeight() - 20, {
-      align: "right",
-    });
+    doc.setTextColor(...COLORS.muted);
+    doc.text(`Page ${page} of ${pages}`, doc.internal.pageSize.getWidth() - 42, doc.internal.pageSize.getHeight() - 18, { align: "right" });
   }
 }
 
-export function exportWeeklyPlanPdf({ plan, targets, groceryByCategory }: ExportWeeklyPlanPdfInput) {
+export function exportWeeklyPlanPdf({ plan, targets }: ExportWeeklyPlanPdfInput) {
   const now = new Date();
   const doc = new jsPDF({ unit: "pt", format: "a4" });
   const pageWidth = doc.internal.pageSize.getWidth();
   const marginX = 40;
   const contentWidth = pageWidth - marginX * 2;
 
+  doc.setFillColor(...COLORS.cardFill);
+  doc.roundedRect(marginX, 30, contentWidth, 72, 14, 14, "F");
+
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(20);
-  doc.setTextColor(18, 36, 58);
-  doc.text("zoop weekly meal plan", 40, 48);
+  doc.setFontSize(19);
+  doc.setTextColor(...COLORS.ink);
+  doc.text("zoop weekly meal plan", marginX + 14, 56);
 
   doc.setFont("helvetica", "normal");
   doc.setFontSize(10);
-  doc.setTextColor(85, 107, 132);
-  doc.text(`Generated ${formatDate(now)}`, 40, 66);
+  doc.setTextColor(...COLORS.muted);
+  doc.text(`Generated ${formatDate(now)}`, marginX + 14, 74);
+  doc.text(`${plan.profile.state} • ${toTitleCase(plan.profile.goal)} • ${toTitleCase(plan.profile.dietType)}`, marginX + 14, 89);
 
   autoTable(doc, {
-    startY: 84,
-    head: [["Profile snapshot", "Value"]],
+    startY: 120,
+    head: [["User info", "Value"]],
     body: [
-      ["State", plan.profile.state],
-      ["Diet", toTitleCase(plan.profile.dietType)],
+      ["Sex", toTitleCase(plan.profile.sex)],
+      ["Age", `${plan.profile.age} years`],
+      ["Height", `${plan.profile.heightCm} cm`],
+      ["Weight", `${plan.profile.weightKg} kg`],
+      ["Activity", toTitleCase(plan.profile.activityLevel)],
       ["Protein focus", toTitleCase(plan.profile.proteinFocus)],
       ["Meal style", toTitleCase(plan.profile.mealStyle)],
-      ["Goal", toTitleCase(plan.profile.goal)],
-      ["Activity", toTitleCase(plan.profile.activityLevel)],
-      ["Body details", `${plan.profile.age}y • ${plan.profile.heightCm} cm • ${plan.profile.weightKg} kg • ${toTitleCase(plan.profile.sex)}`],
     ],
     theme: "grid",
-    headStyles: { fillColor: [225, 236, 251], textColor: [18, 36, 58], fontStyle: "bold" },
-    bodyStyles: { textColor: [33, 51, 73] },
-    styles: { fontSize: 10, cellPadding: 7, lineColor: [220, 230, 243], lineWidth: 0.6 },
     tableWidth: contentWidth,
-    columnStyles: {
-      0: { fontStyle: "bold", cellWidth: 150 },
-      1: { cellWidth: contentWidth - 150 },
-    },
     margin: { left: marginX, right: marginX },
+    headStyles: { fillColor: COLORS.headerFill, textColor: COLORS.ink, fontStyle: "bold", lineColor: COLORS.hairline, lineWidth: 0.6 },
+    bodyStyles: { textColor: COLORS.ink, lineColor: COLORS.hairline, lineWidth: 0.5 },
+    styles: { fontSize: 10, cellPadding: 7 },
+    columnStyles: {
+      0: { cellWidth: TWO_COL_LABEL_WIDTH, fontStyle: "bold" },
+      1: { cellWidth: contentWidth - TWO_COL_LABEL_WIDTH },
+    },
   });
 
-  const nutritionRows = [
-    ["Calories", `${targets.dailyCalories} kcal`, `${plan.totals.avgKcal} kcal`, `${plan.totals.avgKcal - targets.dailyCalories >= 0 ? "+" : ""}${plan.totals.avgKcal - targets.dailyCalories} kcal`],
-    ["Protein", `${targets.dailyProtein} g`, `${plan.totals.avgProtein} g`, `${plan.totals.avgProtein - targets.dailyProtein >= 0 ? "+" : ""}${plan.totals.avgProtein - targets.dailyProtein} g`],
-  ];
-
-  const lastYAfterProfile = (doc as jsPDF & { lastAutoTable?: { finalY?: number } }).lastAutoTable?.finalY ?? 120;
+  const profileTableY = (doc as jsPDF & { lastAutoTable?: { finalY?: number } }).lastAutoTable?.finalY ?? 220;
   autoTable(doc, {
-    startY: lastYAfterProfile + 14,
-    head: [["Nutrition", "Daily target", "Planned average", "Delta"]],
-    body: nutritionRows,
+    startY: profileTableY + 14,
+    head: [["Nutrition", "Target", "Plan avg", "Delta"]],
+    body: [
+      [
+        "Calories",
+        `${targets.dailyCalories} kcal`,
+        `${plan.totals.avgKcal} kcal`,
+        formatDelta(plan.totals.avgKcal - targets.dailyCalories, "kcal"),
+      ],
+      [
+        "Protein",
+        `${targets.dailyProtein} g`,
+        `${plan.totals.avgProtein} g`,
+        formatDelta(plan.totals.avgProtein - targets.dailyProtein, "g"),
+      ],
+    ],
     theme: "grid",
-    headStyles: { fillColor: [225, 236, 251], textColor: [18, 36, 58], fontStyle: "bold" },
-    styles: { fontSize: 10, cellPadding: 7, lineColor: [220, 230, 243], lineWidth: 0.6 },
     tableWidth: contentWidth,
-    columnStyles: {
-      0: { cellWidth: 140, fontStyle: "bold" },
-      1: { cellWidth: 120 },
-      2: { cellWidth: 130 },
-      3: { cellWidth: contentWidth - 390, halign: "right" },
-    },
     margin: { left: marginX, right: marginX },
+    headStyles: { fillColor: COLORS.headerFill, textColor: COLORS.ink, fontStyle: "bold", lineColor: COLORS.hairline, lineWidth: 0.6 },
+    bodyStyles: { textColor: COLORS.ink, lineColor: COLORS.hairline, lineWidth: 0.5 },
+    styles: { fontSize: 10, cellPadding: 7 },
+    columnStyles: {
+      0: { cellWidth: NUTRITION_COL_WIDTHS.metric, fontStyle: "bold" },
+      1: { cellWidth: NUTRITION_COL_WIDTHS.target },
+      2: { cellWidth: NUTRITION_COL_WIDTHS.planAvg },
+      3: { cellWidth: contentWidth - NUTRITION_COL_WIDTHS.metric - NUTRITION_COL_WIDTHS.target - NUTRITION_COL_WIDTHS.planAvg, halign: "right" },
+    },
   });
 
-  let cursorY = (doc as jsPDF & { lastAutoTable?: { finalY?: number } }).lastAutoTable?.finalY ?? 180;
+  let cursorY = (doc as jsPDF & { lastAutoTable?: { finalY?: number } }).lastAutoTable?.finalY ?? 300;
 
   plan.days.forEach((day) => {
     autoTable(doc, {
-      startY: cursorY + 16,
-      head: [[`${day.day}`, "Meal", "kcal", "Protein", "Carbs", "Fat", "Prep"]],
+      startY: cursorY + 14,
+      head: [[day.day, "Meal", "kcal", "Protein", "Prep"]],
       body: [
-        ["Breakfast", day.breakfast.name, `${day.breakfast.kcal}`, `${day.breakfast.protein}g`, `${day.breakfast.carbs}g`, `${day.breakfast.fat}g`, `${day.breakfast.prepTimeMin}m`],
-        ["Lunch", day.lunch.name, `${day.lunch.kcal}`, `${day.lunch.protein}g`, `${day.lunch.carbs}g`, `${day.lunch.fat}g`, `${day.lunch.prepTimeMin}m`],
-        ["Dinner", day.dinner.name, `${day.dinner.kcal}`, `${day.dinner.protein}g`, `${day.dinner.carbs}g`, `${day.dinner.fat}g`, `${day.dinner.prepTimeMin}m`],
-        ["Snack", day.snack.name, `${day.snack.kcal}`, `${day.snack.protein}g`, `${day.snack.carbs}g`, `${day.snack.fat}g`, `${day.snack.prepTimeMin}m`],
+        ["Breakfast", day.breakfast.name, `${day.breakfast.kcal}`, `${day.breakfast.protein}g`, `${day.breakfast.prepTimeMin}m`],
+        ["Lunch", day.lunch.name, `${day.lunch.kcal}`, `${day.lunch.protein}g`, `${day.lunch.prepTimeMin}m`],
+        ["Dinner", day.dinner.name, `${day.dinner.kcal}`, `${day.dinner.protein}g`, `${day.dinner.prepTimeMin}m`],
+        ["Snack", day.snack.name, `${day.snack.kcal}`, `${day.snack.protein}g`, `${day.snack.prepTimeMin}m`],
       ],
       theme: "grid",
-      headStyles: { fillColor: [236, 243, 253], textColor: [18, 36, 58], fontStyle: "bold" },
-      styles: { fontSize: 9.5, cellPadding: 6, lineColor: [224, 233, 245], lineWidth: 0.5 },
       tableWidth: contentWidth,
+      margin: { left: marginX, right: marginX, bottom: 34 },
+      headStyles: { fillColor: COLORS.headerFill, textColor: COLORS.ink, fontStyle: "bold", lineColor: COLORS.hairline, lineWidth: 0.6 },
+      bodyStyles: { textColor: COLORS.ink, lineColor: COLORS.hairline, lineWidth: 0.5 },
+      styles: { fontSize: 9.5, cellPadding: 6 },
       columnStyles: {
-        0: { fontStyle: "bold", cellWidth: 72 },
-        1: { cellWidth: 185 },
-        2: { halign: "right", cellWidth: 52 },
-        3: { halign: "right", cellWidth: 56 },
-        4: { halign: "right", cellWidth: 52 },
-        5: { halign: "right", cellWidth: 45 },
-        6: { halign: "right", cellWidth: contentWidth - 462 },
+        0: { cellWidth: 84, fontStyle: "bold" },
+        1: { cellWidth: contentWidth - 244 },
+        2: { cellWidth: 48, halign: "right" },
+        3: { cellWidth: 60, halign: "right" },
+        4: { cellWidth: 52, halign: "right" },
       },
-      margin: { left: marginX, right: marginX },
     });
     cursorY = (doc as jsPDF & { lastAutoTable?: { finalY?: number } }).lastAutoTable?.finalY ?? cursorY;
-  });
-
-  const groceryRows = Object.entries(groceryByCategory)
-    .flatMap(([category, items]) =>
-      items.map((item) => [category, item.name, `${formatQuantity(item.quantity)} ${item.unit}`]),
-    )
-    .sort((a, b) => a[0].localeCompare(b[0]) || a[1].localeCompare(b[1]));
-
-  autoTable(doc, {
-    startY: cursorY + 18,
-    head: [["Grocery category", "Item", "Quantity"]],
-    body: groceryRows.length ? groceryRows : [["-", "No grocery items", "-"]],
-    theme: "grid",
-    headStyles: { fillColor: [225, 236, 251], textColor: [18, 36, 58], fontStyle: "bold" },
-    styles: { fontSize: 10, cellPadding: 7, lineColor: [220, 230, 243], lineWidth: 0.6 },
-    tableWidth: contentWidth,
-    columnStyles: {
-      0: { cellWidth: 145, fontStyle: "bold" },
-      1: { cellWidth: contentWidth - 245 },
-      2: { cellWidth: 100, halign: "right" },
-    },
-    margin: { left: marginX, right: marginX, bottom: 34 },
   });
 
   addPageNumbers(doc);

@@ -57,7 +57,7 @@ function Metric({
       ? "status-chip"
       : "border border-[color:var(--border-glass)] bg-[color:var(--surface-control)] text-[color:var(--text-secondary)]";
   const StatusIcon = isOnTrack ? CheckCircle2 : isClose ? TriangleAlert : TrendingUp;
-  const roundedDelta = Math.round(delta * 10) / 10;
+  const roundedDelta = Math.round(delta);
   const endValue = series.at(-1) ?? planned;
   const endGap = endValue - target;
   const endStateLabel =

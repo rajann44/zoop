@@ -84,20 +84,22 @@ export function buildGroceryBreakdown(ingredients: Ingredient[], pantrySelected:
       toBuyByCategory[item.category].push(item);
     });
 
-  Object.entries(PANTRY_BASELINE_PURCHASES).forEach(([stapleName, baseline]) => {
-    if (normalizedPantry.has(normalize(stapleName))) return;
-    const key = `${normalize(stapleName)}::${normalize(baseline.unit)}`;
-    const existsInToBuy = toBuyByCategory[baseline.category].some((item) => item.key === key);
-    if (existsInToBuy) return;
+  if (pantrySelected.length > 0) {
+    Object.entries(PANTRY_BASELINE_PURCHASES).forEach(([stapleName, baseline]) => {
+      if (normalizedPantry.has(normalize(stapleName))) return;
+      const key = `${normalize(stapleName)}::${normalize(baseline.unit)}`;
+      const existsInToBuy = toBuyByCategory[baseline.category].some((item) => item.key === key);
+      if (existsInToBuy) return;
 
-    toBuyByCategory[baseline.category].push({
-      key,
-      name: stapleName,
-      quantity: baseline.quantity,
-      unit: baseline.unit,
-      category: baseline.category,
+      toBuyByCategory[baseline.category].push({
+        key,
+        name: stapleName,
+        quantity: baseline.quantity,
+        unit: baseline.unit,
+        category: baseline.category,
+      });
     });
-  });
+  }
 
   INGREDIENT_CATEGORIES.forEach((category) => {
     toBuyByCategory[category] = toBuyByCategory[category].sort((a, b) => a.name.localeCompare(b.name));

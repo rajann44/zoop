@@ -35,9 +35,9 @@ export function GroceryList() {
             className="h-9 w-full rounded-xl sm:w-auto sm:shrink-0"
             onClick={() =>
               exportGroceryListPdf({
+                profile: plan.profile,
                 state: plan.profile.state,
                 toBuyByCategory: breakdown.toBuyByCategory,
-                coveredByCategory: breakdown.coveredByCategory,
                 summary: breakdown.summary,
               })
             }

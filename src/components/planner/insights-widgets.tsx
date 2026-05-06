@@ -340,6 +340,6 @@ function barTone(state: "on" | "below" | "above") {
 }
 
 function formatDelta(value: number) {
-  const rounded = Math.round(value * 10) / 10;
+  const rounded = Math.round(value);
   return `${rounded > 0 ? "+" : ""}${rounded}`;
 }
