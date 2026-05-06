@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
 import { GroceryList } from "@/components/planner/grocery-list";
 import { InsightsWidgets } from "@/components/planner/insights-widgets";
@@ -8,8 +9,15 @@ import { PantryManager } from "@/components/planner/pantry-manager";
 import { ProfileForm } from "@/components/planner/profile-form";
 import { WeeklyPlanSection } from "@/components/planner/weekly-plan";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { usePlannerStore } from "@/store/planner-store";
 
 export function PlannerShell() {
+  const refreshMealCatalog = usePlannerStore((state) => state.refreshMealCatalog);
+
+  useEffect(() => {
+    void refreshMealCatalog();
+  }, [refreshMealCatalog]);
+
   return (
     <div className="liquid-canvas min-h-screen pb-8 sm:pb-10">
       <header className="sticky top-0 z-20 px-3 pt-3 sm:px-4 sm:pt-4">

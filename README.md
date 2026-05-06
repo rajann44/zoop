@@ -47,6 +47,9 @@ npm run start
 1. Import this repository in Vercel.
 2. Set **Environment Variable**:
    - `NEXT_PUBLIC_SITE_URL` = your production URL (e.g. `https://zoop.vercel.app`)
+   - `EDAMAM_APP_ID` (optional, enables dynamic recipe ingestion)
+   - `EDAMAM_APP_KEY` (optional, enables dynamic recipe ingestion)
+   - `USDA_API_KEY` (optional, enriches nutrition values from FoodData Central)
 3. Build command: `npm run build`
 4. Output: default Next.js output
 
@@ -132,3 +135,19 @@ src/
 - No DB, no auth in this MVP
 - Code is modular for future Supabase/Postgres integration
 - Uses predefined meal data for planning
+
+## Dynamic meal catalog (API-backed)
+
+- API route: `src/app/api/meals/catalog/route.ts`
+- Normalized schema: `src/types/meal-catalog.ts`
+- Provider mappings: `src/lib/meal-catalog/map.ts`
+- Provider fetchers: `src/lib/meal-catalog/providers.ts`
+- Cached fallback catalog: `src/lib/meal-catalog/cache.ts`
+- Planner store refresh: `src/store/planner-store.ts` via `refreshMealCatalog`
+
+Flow:
+1. Frontend loads planner and calls `refreshMealCatalog()` once.
+2. Backend fetches Edamam recipes (if keys exist), optionally enriches nutrition from USDA.
+3. Third-party payloads are mapped into internal `NormalizedMeal` objects.
+4. Frontend only consumes normalized planner meals, never raw provider responses.
+5. If providers are unavailable, app falls back to cached/local catalog safely.

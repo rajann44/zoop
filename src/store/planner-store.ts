@@ -2,12 +2,14 @@
 
 import { create } from "zustand";
 import { MEALS } from "@/data/meals";
+import { toPlannerMeals } from "@/lib/meal-catalog/map";
 import { PANTRY_STAPLES } from "@/data/pantry";
 import { SAMPLE_PROFILES } from "@/data/sample-profiles";
 import { buildGroceryList } from "@/lib/grocery";
 import { calculateNutritionTargets } from "@/lib/nutrition";
 import { generateWeeklyPlan } from "@/lib/planner-engine";
 import type { GroceryByCategory, Meal, NutritionTargets, UserProfile, WeeklyPlan } from "@/types/planner";
+import type { MealCatalog } from "@/types/meal-catalog";
 
 const DEFAULT_PROFILE: UserProfile = SAMPLE_PROFILES[0].profile;
 
@@ -31,10 +33,35 @@ type PlannerState = {
   setPantrySelected: (items: string[]) => void;
   regenerate: () => void;
   loadSampleProfile: (sampleId: string) => void;
+  refreshMealCatalog: () => Promise<void>;
 };
 
-function createSnapshot(profile: UserProfile, pantrySelected: string[], seed?: number) {
-  const plan = generateWeeklyPlan(profile, MEALS, seed);
+let mealCatalogCache: Meal[] = MEALS;
+let mealCatalogPromise: Promise<Meal[]> | null = null;
+
+async function loadMealCatalog(): Promise<Meal[]> {
+  if (mealCatalogPromise) return mealCatalogPromise;
+
+  mealCatalogPromise = fetch("/api/meals/catalog", { method: "GET" })
+    .then(async (response) => {
+      if (!response.ok) return mealCatalogCache;
+      const catalog = (await response.json()) as MealCatalog;
+      const mapped = toPlannerMeals(catalog);
+      if (mapped.length) {
+        mealCatalogCache = mapped;
+      }
+      return mealCatalogCache;
+    })
+    .catch(() => mealCatalogCache)
+    .finally(() => {
+      mealCatalogPromise = null;
+    });
+
+  return mealCatalogPromise;
+}
+
+function createSnapshot(profile: UserProfile, pantrySelected: string[], seed?: number, meals: Meal[] = mealCatalogCache) {
+  const plan = generateWeeklyPlan(profile, meals, seed);
   const targets = calculateNutritionTargets(profile);
   const ingredients = collectIngredients(plan);
   const grocery = buildGroceryList(ingredients, pantrySelected, profile);
@@ -57,7 +84,7 @@ export const usePlannerStore = create<PlannerState>((set, get) => ({
   groceryByCategory: initialSnapshot.groceryByCategory,
   isGenerating: false,
   setProfile: (next) => {
-    const snapshot = createSnapshot(next, get().pantrySelected);
+    const snapshot = createSnapshot(next, get().pantrySelected, get().weeklyPlan.seed);
     set({ profile: next, ...snapshot });
   },
   setPantryItem: (name, enabled) => {
@@ -83,5 +110,11 @@ export const usePlannerStore = create<PlannerState>((set, get) => ({
     if (!sample) return;
     const snapshot = createSnapshot(sample.profile, get().pantrySelected);
     set({ profile: sample.profile, ...snapshot });
+  },
+  refreshMealCatalog: async () => {
+    set({ isGenerating: true });
+    const meals = await loadMealCatalog();
+    const snapshot = createSnapshot(get().profile, get().pantrySelected, get().weeklyPlan.seed, meals);
+    set({ ...snapshot, isGenerating: false });
   },
 }));
