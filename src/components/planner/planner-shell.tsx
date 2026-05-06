@@ -10,13 +10,22 @@ import { ProfileForm } from "@/components/planner/profile-form";
 import { WeeklyPlanSection } from "@/components/planner/weekly-plan";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { usePlannerStore } from "@/store/planner-store";
+import { popPendingHomeBodyProfile } from "@/lib/home-profile";
 
 export function PlannerShell() {
   const refreshMealCatalog = usePlannerStore((state) => state.refreshMealCatalog);
+  const profile = usePlannerStore((state) => state.profile);
+  const setProfile = usePlannerStore((state) => state.setProfile);
 
   useEffect(() => {
     void refreshMealCatalog();
   }, [refreshMealCatalog]);
+
+  useEffect(() => {
+    const pending = popPendingHomeBodyProfile();
+    if (!pending) return;
+    setProfile({ ...profile, ...pending });
+  }, [profile, setProfile]);
 
   return (
     <div className="liquid-canvas min-h-screen pb-8 sm:pb-10">
