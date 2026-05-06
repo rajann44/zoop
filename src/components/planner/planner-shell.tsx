@@ -5,7 +5,6 @@ import { GroceryList } from "@/components/planner/grocery-list";
 import { BodyMetricsSummary } from "@/components/planner/body-metrics-summary";
 import { InsightsWidgets } from "@/components/planner/insights-widgets";
 import { NutritionSummary } from "@/components/planner/nutrition-summary";
-import { PantryManager } from "@/components/planner/pantry-manager";
 import { ProfileForm } from "@/components/planner/profile-form";
 import { WeeklyPlanSection } from "@/components/planner/weekly-plan";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -62,7 +61,6 @@ export function PlannerShell() {
             <NutritionSummary />
             <InsightsWidgets />
             <WeeklyPlanSection />
-            <PantryManager />
             <GroceryList />
           </section>
         </div>
