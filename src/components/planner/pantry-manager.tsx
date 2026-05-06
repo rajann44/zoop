@@ -9,7 +9,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { fetchPantrySuggestions, type PantrySuggestion } from "@/lib/pantry-suggestions";
 import { cn } from "@/lib/utils";
 import { usePlannerStore } from "@/store/planner-store";
 
@@ -21,9 +20,6 @@ export function PantryManager() {
   const setPantrySelected = usePlannerStore((state) => state.setPantrySelected);
   const [showCustom, setShowCustom] = useState(false);
   const [search, setSearch] = useState("");
-  const [suggestions, setSuggestions] = useState<PantrySuggestion[]>([]);
-  const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false);
-  const [suggestionError, setSuggestionError] = useState<string | null>(null);
 
   const simpleEnabled = CORE_STAPLES.every((item) => pantrySelected.includes(item));
   const selectedCount = pantrySelected.length;
@@ -42,19 +38,6 @@ export function PantryManager() {
       return;
     }
     setPantrySelected(pantrySelected.filter((item) => !CORE_STAPLES.includes(item)));
-  };
-
-  const loadSuggestions = async () => {
-    setIsLoadingSuggestions(true);
-    setSuggestionError(null);
-    try {
-      const data = await fetchPantrySuggestions();
-      setSuggestions(data.suggestions);
-    } catch {
-      setSuggestionError("Could not fetch pack suggestions right now.");
-    } finally {
-      setIsLoadingSuggestions(false);
-    }
   };
 
   return (
@@ -86,27 +69,6 @@ export function PantryManager() {
         <div className="surface-inset flex items-center justify-between rounded-xl px-3 py-2 text-sm">
           <span className="text-muted-foreground">Items marked as at home</span>
           <span className="font-semibold text-foreground">{selectedCount}</span>
-        </div>
-
-        <div className="surface-inset rounded-xl px-3 py-2.5">
-          <div className="mb-1.5 flex items-center justify-between gap-2">
-            <p className="text-sm font-medium">Dynamic pack suggestions</p>
-            <Button type="button" size="sm" variant="ghost" className="h-7 px-2.5 text-xs" onClick={loadSuggestions} disabled={isLoadingSuggestions}>
-              {isLoadingSuggestions ? "Refreshing..." : suggestions.length ? "Refresh" : "Fetch"}
-            </Button>
-          </div>
-          <p className="text-xs text-muted-foreground">Optional helper: fetches India pack-size medians from Open Food Facts.</p>
-          {suggestionError ? <p className="mt-2 text-xs text-rose-600">{suggestionError}</p> : null}
-          {suggestions.length ? (
-            <div className="mt-2 space-y-1.5">
-              {suggestions.map((item) => (
-                <div key={item.name} className="glass-soft flex items-center justify-between rounded-lg px-2.5 py-2 text-xs">
-                  <span className="text-foreground/90">{item.name}</span>
-                  <span className="text-muted-foreground">{item.recommendedPack} • {item.sampleSize} samples</span>
-                </div>
-              ))}
-            </div>
-          ) : null}
         </div>
 
         <Button

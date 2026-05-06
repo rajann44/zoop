@@ -12,7 +12,7 @@ It generates a practical weekly Indian meal plan for one person and a merged gro
 - Mifflin-St Jeor calories + activity multipliers
 - Goal and protein-focus based protein targets
 - Weekly grocery list split into to-buy vs pantry-covered items
-- Pantry staples + dynamic pack suggestions from Open Food Facts
+- Pantry staples with at-home toggles
 - Sample personas for instant testing
 - Light/dark mode, rendering mode toggle, responsive liquid-glass inspired UI
 
@@ -131,4 +131,4 @@ src/
 
 - No DB, no auth in this MVP
 - Code is modular for future Supabase/Postgres integration
-- Uses predefined meal data for planning and Open Food Facts for pantry pack suggestions
+- Uses predefined meal data for planning
