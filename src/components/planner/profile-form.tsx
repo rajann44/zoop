@@ -49,7 +49,7 @@ export function ProfileForm() {
         <CardDescription>Set your core preferences and generate a plan in one tap.</CardDescription>
       </CardHeader>
       <CardContent className="!p-0 flex min-h-0 flex-1 flex-col">
-        <div className="flex-1 space-y-4 overflow-y-auto px-4 pb-6 sm:px-5">
+        <div className="sidebar-scroll flex-1 space-y-4 overflow-y-auto px-4 pb-6 sm:px-5">
           <section className="space-y-2 pt-1">
             <p className="text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">Quick start</p>
             <div className="surface-inset rounded-xl p-3">

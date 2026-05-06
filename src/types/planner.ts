@@ -91,6 +91,10 @@ export type Meal = {
   prepTimeMin: number;
 };
 
+export type PlannedMeal = Meal & {
+  cardArtUrl?: string;
+};
+
 export type UserProfile = {
   state: IndianState;
   dietType: DietType;
@@ -106,10 +110,10 @@ export type UserProfile = {
 
 export type DayPlan = {
   day: string;
-  breakfast: Meal;
-  lunch: Meal;
-  dinner: Meal;
-  snack: Meal;
+  breakfast: PlannedMeal;
+  lunch: PlannedMeal;
+  dinner: PlannedMeal;
+  snack: PlannedMeal;
 };
 
 export type WeeklyPlan = {

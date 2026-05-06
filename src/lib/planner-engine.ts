@@ -1,4 +1,5 @@
 import { calculateNutritionTargets } from "@/lib/nutrition";
+import { buildMealCardArtUrl } from "@/lib/meal-card-art";
 import { roundTo } from "@/lib/utils";
 import type { DayPlan, DietType, Meal, MealType, ProteinFocus, UserProfile, WeeklyPlan } from "@/types/planner";
 
@@ -150,10 +151,22 @@ export function generateWeeklyPlan(profile: UserProfile, meals: Meal[], seed = D
 
     days.push({
       day: DAY_NAMES[dayIndex],
-      breakfast: dayMeals.breakfast!,
-      lunch: dayMeals.lunch!,
-      dinner: dayMeals.dinner!,
-      snack: dayMeals.snack!,
+      breakfast: {
+        ...dayMeals.breakfast!,
+        cardArtUrl: buildMealCardArtUrl({ mealId: dayMeals.breakfast!.id, mealType: "breakfast", seed }),
+      },
+      lunch: {
+        ...dayMeals.lunch!,
+        cardArtUrl: buildMealCardArtUrl({ mealId: dayMeals.lunch!.id, mealType: "lunch", seed }),
+      },
+      dinner: {
+        ...dayMeals.dinner!,
+        cardArtUrl: buildMealCardArtUrl({ mealId: dayMeals.dinner!.id, mealType: "dinner", seed }),
+      },
+      snack: {
+        ...dayMeals.snack!,
+        cardArtUrl: buildMealCardArtUrl({ mealId: dayMeals.snack!.id, mealType: "snack", seed }),
+      },
     });
   }
 

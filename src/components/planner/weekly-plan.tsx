@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Image, { type StaticImageData } from "next/image";
+import Image from "next/image";
 import { ChevronDown, Eye } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -11,19 +11,8 @@ import { MealDetailDialog } from "@/components/planner/meal-detail-dialog";
 import type { Meal } from "@/types/planner";
 import { usePlannerStore } from "@/store/planner-store";
 import { toTitleCase } from "@/lib/utils";
-import img1 from "../../../images/img1.jpg";
-import img2 from "../../../images/img2.jpg";
-import img3 from "../../../images/img3.jpg";
-import img4 from "../../../images/img4.jpg";
 
 const slots = ["breakfast", "lunch", "dinner", "snack"] as const;
-
-const slotMedia: Record<(typeof slots)[number], { src: StaticImageData; tint: string }> = {
-  breakfast: { src: img1, tint: "from-[color:var(--accent-primary-muted)] via-white/8 to-transparent" },
-  lunch: { src: img2, tint: "from-[color:var(--accent-primary-muted)] via-white/10 to-transparent" },
-  dinner: { src: img3, tint: "from-[color:var(--accent-primary-muted)] via-white/8 to-transparent" },
-  snack: { src: img4, tint: "from-[color:var(--accent-primary-muted)] via-white/10 to-transparent" },
-};
 
 export function WeeklyPlanSection() {
   const plan = usePlannerStore((state) => state.weeklyPlan);
@@ -78,12 +67,22 @@ export function WeeklyPlanSection() {
             <CardContent className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
               {slots.map((slot) => {
                 const meal = day[slot];
-                const media = slotMedia[slot];
                 return (
                   <div key={`${day.day}-${slot}`} className="surface-inset relative flex h-full flex-col overflow-hidden rounded-2xl p-3">
                     <div className="relative mb-3 overflow-hidden rounded-xl border border-[color:var(--border-glass)] bg-[color:var(--surface-control)]">
-                      <Image src={media.src} alt={`${toTitleCase(slot)} preview`} className="h-28 w-full object-cover" sizes="(min-width: 1024px) 22vw, (min-width: 640px) 42vw, 95vw" />
-                      <div className={`pointer-events-none absolute inset-0 bg-gradient-to-br ${media.tint}`} />
+                      {meal.cardArtUrl ? (
+                        <Image
+                          src={meal.cardArtUrl}
+                          alt={`${toTitleCase(slot)} preview`}
+                          className="h-28 w-full object-cover"
+                          sizes="(min-width: 1024px) 22vw, (min-width: 640px) 42vw, 95vw"
+                          width={400}
+                          height={288}
+                          unoptimized
+                        />
+                      ) : (
+                        <div className="h-28 w-full bg-[color:var(--accent-primary-muted)]" />
+                      )}
                     </div>
                     <div className="relative mb-2 flex items-center justify-between">
                       <Badge variant="outline" className="rounded-full px-2.5 py-1">
