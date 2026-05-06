@@ -1,46 +1,79 @@
 "use client";
 
-import { useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { CheckCircle2, TriangleAlert, TrendingUp } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { usePlannerStore } from "@/store/planner-store";
 
 export function NutritionSummary() {
   const targets = usePlannerStore((state) => state.nutritionTargets);
   const totals = usePlannerStore((state) => state.weeklyPlan.totals);
-  const [showDetails, setShowDetails] = useState(false);
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Nutrition targets</CardTitle>
+        <CardTitle>Nutrition progress</CardTitle>
       </CardHeader>
       <CardContent className="grid gap-3 sm:grid-cols-2">
-        <Metric label="Daily calorie target" value={`${targets.dailyCalories} kcal`} />
-        <Metric label="Daily protein target" value={`${targets.dailyProtein} g`} />
-        <div className="sm:col-span-2">
-          <Button variant="ghost" className="h-8 w-full justify-between border border-dashed border-border" onClick={() => setShowDetails((current) => !current)}>
-            {showDetails ? "Hide planned averages" : "Show planned averages"}
-            <ChevronDown className={`h-4 w-4 transition-transform ${showDetails ? "rotate-180" : ""}`} />
-          </Button>
-        </div>
-        {showDetails ? (
-          <>
-            <Metric label="Planned avg calories" value={`${totals.avgKcal} kcal`} />
-            <Metric label="Planned avg protein" value={`${totals.avgProtein} g`} />
-          </>
-        ) : null}
+        <Metric label="Calories" target={targets.dailyCalories} planned={totals.avgKcal} unit="kcal" />
+        <Metric label="Protein" target={targets.dailyProtein} planned={totals.avgProtein} unit="g" />
       </CardContent>
     </Card>
   );
 }
 
-function Metric({ label, value }: { label: string; value: string }) {
+function Metric({
+  label,
+  target,
+  planned,
+  unit,
+}: {
+  label: string;
+  target: number;
+  planned: number;
+  unit: string;
+}) {
+  const ratio = target > 0 ? planned / target : 0;
+  const progress = Math.max(0, Math.min(ratio * 100, 130));
+  const percentGap = target > 0 ? Math.abs((planned - target) / target) : 1;
+  const isOnTrack = percentGap <= 0.08;
+  const isClose = percentGap > 0.08 && percentGap <= 0.16;
+  const delta = planned - target;
+  const statusLabel = isOnTrack ? "On track" : isClose ? "Slightly off" : delta > 0 ? "Above target" : "Below target";
+  const statusTone = isOnTrack ? "text-emerald-700 bg-emerald-100/80 border-emerald-200/80" : isClose ? "text-amber-700 bg-amber-100/80 border-amber-200/80" : "text-rose-700 bg-rose-100/80 border-rose-200/80";
+  const StatusIcon = isOnTrack ? CheckCircle2 : isClose ? TriangleAlert : TrendingUp;
+  const roundedDelta = Math.round(delta * 10) / 10;
+
   return (
     <div className="surface-inset rounded-xl p-3">
-      <p className="text-xs text-muted-foreground">{label}</p>
-      <p className="mt-1 text-lg font-semibold">{value}</p>
+      <div className="flex items-center justify-between gap-2">
+        <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{label}</p>
+        <span className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] font-medium ${statusTone}`}>
+          <StatusIcon className="h-3 w-3" />
+          {statusLabel}
+        </span>
+      </div>
+      <div className="mt-2 grid grid-cols-2 gap-2 text-sm">
+        <div className="rounded-lg border border-white/50 bg-white/30 px-2.5 py-2">
+          <p className="text-[11px] text-muted-foreground">Target</p>
+          <p className="mt-0.5 text-base font-semibold text-foreground">
+            {target} {unit}
+          </p>
+        </div>
+        <div className="rounded-lg border border-white/50 bg-white/30 px-2.5 py-2">
+          <p className="text-[11px] text-muted-foreground">Planned avg</p>
+          <p className="mt-0.5 text-base font-semibold text-foreground">
+            {planned} {unit}
+          </p>
+        </div>
+      </div>
+      <div className="mt-2">
+        <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/45">
+          <div className="h-full rounded-full bg-accent/85 transition-all" style={{ width: `${progress}%` }} />
+        </div>
+        <p className="mt-1.5 text-xs text-muted-foreground">
+          {roundedDelta === 0 ? "Exactly on target" : `${roundedDelta > 0 ? "+" : ""}${roundedDelta} ${unit} vs target`}
+        </p>
+      </div>
     </div>
   );
 }

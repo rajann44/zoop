@@ -22,7 +22,7 @@ export function PlannerShell() {
       </header>
 
       <main className="px-3 pt-3 sm:px-4 sm:pt-4">
-        <div className="mx-auto grid max-w-6xl gap-3 sm:gap-4 lg:grid-cols-[280px_minmax(0,1fr)_300px]">
+        <div className="mx-auto grid max-w-6xl gap-3 sm:gap-4 lg:grid-cols-[290px_minmax(0,1fr)] lg:items-start">
           <section className="space-y-3 sm:space-y-4 lg:sticky lg:top-24 lg:h-fit">
             <ProfileForm />
             <PantryManager />
@@ -31,9 +31,6 @@ export function PlannerShell() {
           <section className="space-y-3 sm:space-y-4">
             <NutritionSummary />
             <WeeklyPlanSection />
-          </section>
-
-          <section className="lg:sticky lg:top-24 lg:h-fit lg:max-h-[calc(100vh-7rem)] lg:overflow-auto">
             <GroceryList />
           </section>
         </div>

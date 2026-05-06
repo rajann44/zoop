@@ -45,11 +45,11 @@ export function ProfileForm() {
     <Card>
       <CardHeader>
         <CardTitle>Planner inputs</CardTitle>
-        <CardDescription>Start with essentials. Open advanced only if you want finer nutrition targeting.</CardDescription>
+        <CardDescription>Step 1: set your preferences, then generate your weekly plan. Use advanced only if you want finer nutrition targeting.</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-2">
-          <Label>Load sample profile</Label>
+          <Label>Load sample profile (optional)</Label>
           <Select onValueChange={loadSampleProfile}>
             <SelectTrigger>
               <SelectValue placeholder="Choose a sample profile" />
@@ -147,7 +147,7 @@ export function ProfileForm() {
           onClick={() => setShowAdvanced((current) => !current)}
           type="button"
         >
-          {showAdvanced ? "Hide advanced body settings" : "Show advanced body settings"}
+          {showAdvanced ? "Hide advanced body settings" : "Show advanced body settings (optional)"}
           <ChevronDown className={`h-4 w-4 transition-transform ${showAdvanced ? "rotate-180" : ""}`} />
         </Button>
 
@@ -200,7 +200,7 @@ export function ProfileForm() {
         ) : null}
 
         <Button className="w-full" onClick={regenerate} disabled={isGenerating}>
-          {isGenerating ? "Generating..." : "Regenerate weekly plan"}
+          {isGenerating ? "Generating your plan..." : "Generate / refresh weekly plan"}
         </Button>
       </CardContent>
     </Card>

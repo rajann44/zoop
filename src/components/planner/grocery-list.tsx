@@ -17,11 +17,11 @@ export function GroceryList() {
     <Card>
       <CardHeader>
         <CardTitle>Weekly grocery list</CardTitle>
-        <CardDescription>Buy list first, with pantry-covered items separated so this section stays action-focused.</CardDescription>
+        <CardDescription>This is what you need to buy this week. Items already in your pantry are separated below.</CardDescription>
       </CardHeader>
       <CardContent className="space-y-2.5">
         <div className="surface-inset flex items-center justify-between rounded-xl px-3 py-2 text-sm">
-          <span className="text-muted-foreground">{breakdown.summary.total} total ingredients this week</span>
+          <span className="text-muted-foreground">{breakdown.summary.total} total ingredients planned</span>
           <span className="font-medium text-foreground">{breakdown.summary.toBuy} to buy • {breakdown.summary.covered} covered</span>
         </div>
 
@@ -55,7 +55,7 @@ export function GroceryList() {
 
         <details className="surface-inset group rounded-xl">
           <summary className="flex cursor-pointer list-none items-center justify-between px-3 py-2 text-sm font-medium">
-            Covered by pantry
+            Already at home (pantry)
             <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform group-open:rotate-180" />
           </summary>
           <div className="border-t border-border px-3 py-2">

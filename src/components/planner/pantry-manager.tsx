@@ -60,13 +60,13 @@ export function PantryManager() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Pantry</CardTitle>
-        <CardDescription>Track what you already have. Grocery list auto-removes pantry-covered items.</CardDescription>
+        <CardTitle>Pantry (already at home)</CardTitle>
+        <CardDescription>Mark items you currently have at home. We use this to remove covered ingredients from your weekly buy list.</CardDescription>
       </CardHeader>
       <CardContent className="space-y-3">
         <div className="surface-inset rounded-xl px-3 py-2.5">
           <div className="mb-2 flex items-center justify-between gap-3">
-            <Label htmlFor="simple-staples">I already have basic staples</Label>
+            <Label htmlFor="simple-staples">I already have these basic staples</Label>
             <Switch id="simple-staples" checked={simpleEnabled} onCheckedChange={onSimpleToggle} />
           </div>
           <p className="text-xs text-muted-foreground">Rice, atta, oil, salt, turmeric, chili powder</p>
@@ -84,7 +84,7 @@ export function PantryManager() {
         </div>
 
         <div className="surface-inset flex items-center justify-between rounded-xl px-3 py-2 text-sm">
-          <span className="text-muted-foreground">Pantry items selected</span>
+          <span className="text-muted-foreground">Items marked as at home</span>
           <span className="font-semibold text-foreground">{selectedCount}</span>
         </div>
 
@@ -95,7 +95,7 @@ export function PantryManager() {
               {isLoadingSuggestions ? "Refreshing..." : suggestions.length ? "Refresh" : "Fetch"}
             </Button>
           </div>
-          <p className="text-xs text-muted-foreground">Fetches India product pack-size medians from Open Food Facts.</p>
+          <p className="text-xs text-muted-foreground">Optional helper: fetches India pack-size medians from Open Food Facts.</p>
           {suggestionError ? <p className="mt-2 text-xs text-rose-600">{suggestionError}</p> : null}
           {suggestions.length ? (
             <div className="mt-2 space-y-1.5">
@@ -115,7 +115,7 @@ export function PantryManager() {
           onClick={() => setShowCustom((current) => !current)}
           type="button"
         >
-          {showCustom ? "Hide custom pantry" : "Customize pantry items"}
+          {showCustom ? "Hide pantry checklist" : "Review full pantry checklist"}
           <ChevronDown className={`h-4 w-4 transition-transform ${showCustom ? "rotate-180" : ""}`} />
         </Button>
 
