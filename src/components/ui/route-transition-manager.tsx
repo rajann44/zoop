@@ -17,14 +17,14 @@ export function RouteTransitionManager() {
     };
 
     if (typeof document === "undefined") return;
-    document.body.classList.remove("route-transitioning");
-    document.body.classList.add("route-entering");
+    document.body.classList.remove("route-fade-transitioning");
+    document.body.classList.add("route-fade-entering");
     updateHeaderTone();
 
     window.addEventListener("scroll", updateHeaderTone, { passive: true });
     const timeout = window.setTimeout(() => {
-      document.body.classList.remove("route-entering");
-    }, 260);
+      document.body.classList.remove("route-fade-entering");
+    }, 280);
 
     return () => {
       window.clearTimeout(timeout);

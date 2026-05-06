@@ -15,7 +15,7 @@ function isModifiedEvent(event: MouseEvent<HTMLAnchorElement>) {
 }
 
 export const TransitionLink = forwardRef<HTMLAnchorElement, TransitionLinkProps>(
-  ({ href, onClick, transitionMs = 180, target, children, ...props }, ref) => {
+  ({ href, onClick, transitionMs = 190, target, children, ...props }, ref) => {
     const router = useRouter();
 
     return (
@@ -32,7 +32,7 @@ export const TransitionLink = forwardRef<HTMLAnchorElement, TransitionLinkProps>
 
           event.preventDefault();
           if (typeof document !== "undefined") {
-            document.body.classList.add("route-transitioning");
+            document.body.classList.add("route-fade-transitioning");
           }
 
           window.setTimeout(() => {

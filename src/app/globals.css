@@ -97,50 +97,50 @@ body::after {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  background: radial-gradient(90% 70% at 50% 18%, rgb(255 255 255 / 0.2) 0%, rgb(255 255 255 / 0) 68%);
+  background: radial-gradient(86% 68% at 50% 18%, rgb(255 255 255 / 0.14) 0%, rgb(255 255 255 / 0) 72%);
   opacity: 0;
-  transform: scale(1.012);
-  transition: opacity 260ms ease, transform 320ms ease;
+  transform: scale(1.006);
+  transition: opacity 280ms ease, transform 320ms ease;
   z-index: 999;
 }
 
-body.route-transitioning {
+body.route-fade-transitioning {
   overflow: hidden;
 }
 
-body.route-transitioning main {
-  opacity: 0.68;
-  transform: translateY(6px) scale(0.992);
-  filter: saturate(0.94) blur(1.2px);
-  transition: opacity 180ms ease, transform 180ms ease, filter 180ms ease;
+body.route-fade-transitioning main {
+  opacity: 0.56;
+  transform: scale(0.996);
+  filter: saturate(0.98);
+  transition: opacity 190ms ease-out, transform 220ms ease-out, filter 220ms ease-out;
 }
 
-body.route-transitioning::after {
+body.route-fade-transitioning::after {
   opacity: 1;
   transform: scale(1);
 }
 
-body.route-entering main {
-  animation: route-content-enter 260ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+body.route-fade-entering main {
+  animation: route-content-fade-enter 300ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
 
-@keyframes route-content-enter {
+@keyframes route-content-fade-enter {
   from {
-    opacity: 0.72;
-    transform: translateY(10px) scale(0.994);
-    filter: saturate(0.95) blur(1px);
+    opacity: 0.68;
+    transform: scale(0.997);
+    filter: saturate(0.985);
   }
   to {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: scale(1);
     filter: none;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   body::after,
-  body.route-transitioning main,
-  body.route-entering main {
+  body.route-fade-transitioning main,
+  body.route-fade-entering main {
     transition: none;
     animation: none;
     transform: none;
