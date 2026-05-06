@@ -174,8 +174,9 @@ function MiniSparkline({ values, target, unit }: { values: number[]; target: num
         strokeDasharray="3 2"
         strokeOpacity="0.45"
         strokeWidth="1"
-        title={`${t.planner.nutrition.target}: ${target} ${unit}`}
-      />
+      >
+        <title>{`${t.planner.nutrition.target}: ${target} ${unit}`}</title>
+      </line>
       <polyline fill="none" stroke="var(--accent-progress)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" points={pointString} />
       {points.map((point, index) => (
         <circle key={`${point.x}-${index}`} cx={point.x} cy={point.y} r="1.2" fill="var(--accent-progress)">
