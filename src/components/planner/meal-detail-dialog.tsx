@@ -1,7 +1,8 @@
 "use client";
 
 import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { getPortionHint } from "@/lib/portion";
 import type { Goal, Meal } from "@/types/planner";
 import { toTitleCase } from "@/lib/utils";
@@ -28,6 +29,7 @@ export function MealDetailDialog({ meal, goal, open, onOpenChange }: MealDetailD
   }
 
   const portionHint = getPortionHint(meal, goal);
+  const youtubeUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(`${meal.name} recipe`)}`;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -65,23 +67,50 @@ export function MealDetailDialog({ meal, goal, open, onOpenChange }: MealDetailD
           </div>
         ) : null}
 
-        <div className="surface-inset rounded-xl p-3">
-          <h4 className="mb-2 text-sm font-semibold">Ingredients</h4>
-          <ul className="space-y-1 text-sm text-muted-foreground">
+        <div className="surface-inset overflow-hidden rounded-xl">
+          <div className="flex items-center justify-between border-b border-border/70 px-3 py-2.5">
+            <h4 className="text-sm font-semibold">Ingredients</h4>
+            <span className="text-xs text-muted-foreground">{meal.ingredients.length} items</span>
+          </div>
+          <ul className="divide-y divide-border/55">
             {meal.ingredients.map((ingredient) => (
-              <li key={`${meal.id}-${ingredient.name}`}>- {ingredient.name}: {ingredient.quantity} {ingredient.unit}</li>
+              <li key={`${meal.id}-${ingredient.name}`} className="flex items-center justify-between gap-3 px-3 py-2 text-sm">
+                <span className="text-foreground/90">{ingredient.name}</span>
+                <span className="shrink-0 text-xs text-muted-foreground">
+                  {ingredient.quantity} {ingredient.unit}
+                </span>
+              </li>
             ))}
           </ul>
         </div>
 
-        <div className="flex flex-wrap gap-2">
-          <Badge variant="neutral">{toTitleCase(meal.dietType)}</Badge>
-          <Badge variant="neutral">Protein {toTitleCase(meal.proteinLevel)}</Badge>
-          {meal.mealStyleTags.map((tag) => (
-            <Badge key={`${meal.id}-${tag}`} variant="outline">
-              {toTitleCase(tag)}
-            </Badge>
-          ))}
+        <div className="surface-inset rounded-xl p-3">
+          <p className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">Meal tags</p>
+          <div className="flex flex-wrap gap-2">
+            <Badge variant="neutral">{toTitleCase(meal.dietType)}</Badge>
+            <Badge variant="neutral">Protein {toTitleCase(meal.proteinLevel)}</Badge>
+            {meal.mealStyleTags.map((tag) => (
+              <Badge key={`${meal.id}-${tag}`} variant="outline">
+                {toTitleCase(tag)}
+              </Badge>
+            ))}
+          </div>
+        </div>
+
+        <div className="control-surface flex items-center justify-between rounded-xl px-3 py-2.5">
+          <p className="text-xs text-muted-foreground">Want a quick recipe walkthrough?</p>
+          <div className="flex items-center gap-2">
+            <DialogClose asChild>
+              <Button size="sm" variant="ghost" className="h-8 px-3 text-xs">
+                Close
+              </Button>
+            </DialogClose>
+            <Button asChild size="sm" variant="secondary" className="h-8 px-3 text-xs">
+              <a href={youtubeUrl} target="_blank" rel="noreferrer noopener">
+                Watch on YouTube
+              </a>
+            </Button>
+          </div>
         </div>
       </DialogContent>
     </Dialog>
