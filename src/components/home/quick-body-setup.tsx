@@ -1,9 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Minus, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { SegmentedControl } from "@/components/ui/segmented-control";
 import { TransitionLink } from "@/components/ui/transition-link";
@@ -43,6 +42,14 @@ export function QuickBodySetup() {
     setProfile((prev) => ({ ...prev, [key]: value }));
   };
 
+  const adjustNumber = (key: (typeof numberFields)[number]["key"], min: number, max: number, delta: number) => {
+    setProfile((prev) => {
+      const next = Math.min(max, Math.max(min, prev[key] + delta));
+      setNumberInputs((current) => ({ ...current, [key]: String(next) }));
+      return { ...prev, [key]: next };
+    });
+  };
+
   const updateNumberInput = (key: (typeof numberFields)[number]["key"], raw: string) => {
     const digitsOnly = raw.replace(/\D+/g, "").replace(/^0+(?=\d)/, "");
     setNumberInputs((prev) => ({ ...prev, [key]: digitsOnly }));
@@ -59,13 +66,6 @@ export function QuickBodySetup() {
     const clamped = Math.min(max, Math.max(min, Math.round(Number(current))));
     update(key, clamped as HomeBodyProfile[typeof key]);
     setNumberInputs((prev) => ({ ...prev, [key]: String(clamped) }));
-  };
-
-  const profileForSave = {
-    ...profile,
-    age: numberInputs.age ? Number(numberInputs.age) : profile.age,
-    heightCm: numberInputs.heightCm ? Number(numberInputs.heightCm) : profile.heightCm,
-    weightKg: numberInputs.weightKg ? Number(numberInputs.weightKg) : profile.weightKg,
   };
 
   return (
@@ -105,24 +105,44 @@ export function QuickBodySetup() {
 
         <div className="grid gap-2 sm:grid-cols-3">
           {numberFields.map((field) => {
-            const textValue = numberInputs[field.key];
-            const parsed = textValue ? Number(textValue) : null;
+            const value = numberInputs[field.key];
+            const parsed = value ? Number(value) : null;
             const outside = parsed !== null && (parsed < field.min || parsed > field.max);
             return (
               <div key={field.key} className="space-y-1.5">
                 <Label htmlFor={`home-${field.key}`} className="text-sm">
                   {field.label}
                 </Label>
-                <Input
+                <div
                   id={`home-${field.key}`}
-                  type="text"
-                  inputMode="numeric"
-                  min={field.min}
-                  max={field.max}
-                  value={textValue}
-                  onChange={(event) => updateNumberInput(field.key, event.target.value)}
-                  onBlur={() => onNumberBlur(field.key, field.min, field.max)}
-                />
+                  className="control-surface flex min-h-10 items-center justify-between rounded-xl px-2 py-1"
+                >
+                  <button
+                    type="button"
+                    aria-label={`Decrease ${field.label}`}
+                    onClick={() => adjustNumber(field.key, field.min, field.max, -1)}
+                    className="inline-flex h-8 w-8 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-[color:var(--accent-primary-muted)] hover:text-foreground"
+                  >
+                    <Minus className="h-4 w-4" />
+                  </button>
+                  <input
+                    id={`home-${field.key}`}
+                    type="text"
+                    inputMode="numeric"
+                    value={value}
+                    onChange={(event) => updateNumberInput(field.key, event.target.value)}
+                    onBlur={() => onNumberBlur(field.key, field.min, field.max)}
+                    className="w-24 bg-transparent text-center text-sm font-semibold tabular-nums text-foreground outline-none"
+                  />
+                  <button
+                    type="button"
+                    aria-label={`Increase ${field.label}`}
+                    onClick={() => adjustNumber(field.key, field.min, field.max, 1)}
+                    className="inline-flex h-8 w-8 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-[color:var(--accent-primary-muted)] hover:text-foreground"
+                  >
+                    <Plus className="h-4 w-4" />
+                  </button>
+                </div>
                 <p className={`text-xs ${outside ? "text-amber-600" : "text-muted-foreground"}`}>
                   {field.min}-{field.max}{"unit" in field ? ` ${field.unit}` : ""}
                 </p>
@@ -136,7 +156,7 @@ export function QuickBodySetup() {
         <p className="text-xs text-muted-foreground">{t.home.quickSetup.optionalNote}</p>
         <Button
           asChild
-          onClick={() => saveHomeBodyProfile(profileForSave)}
+          onClick={() => saveHomeBodyProfile(profile)}
           className="hover:shadow-[0_0_0_1px_rgb(10_122_255_/_0.28),0_12px_28px_rgb(10_122_255_/_0.42)] dark:hover:shadow-[0_0_0_1px_rgb(92_168_255_/_0.38),0_12px_28px_rgb(92_168_255_/_0.36)]"
         >
           <TransitionLink href="/planner">
