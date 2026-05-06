@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
+import { CheckCircle2, TriangleAlert, TrendingUp } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toTitleCase } from "@/lib/utils";
 import { buildGroceryBreakdown } from "@/lib/grocery";
@@ -15,7 +16,6 @@ const COMPLEXITY_CATEGORIES = new Set(["Spices & Condiments", "Oils & Essentials
 export function InsightsWidgets() {
   const plan = usePlannerStore((state) => state.weeklyPlan);
   const targets = usePlannerStore((state) => state.nutritionTargets);
-  const pantrySelected = usePlannerStore((state) => state.pantrySelected);
 
   const metrics = useMemo(() => {
     const daily = plan.days.map((day) => {
@@ -34,7 +34,7 @@ export function InsightsWidgets() {
     const allIngredients = plan.days
       .flatMap((day) => slots.map((slot) => day[slot]))
       .flatMap((meal) => meal.ingredients);
-    const grocery = buildGroceryBreakdown(allIngredients, pantrySelected, plan.profile);
+    const grocery = buildGroceryBreakdown(allIngredients, [], plan.profile);
     const activeToBuyCategories = Object.entries(grocery.toBuyByCategory)
       .filter(([, items]) => items.length > 0)
       .map(([category]) => category);
@@ -71,16 +71,13 @@ export function InsightsWidgets() {
           ? { carbs: 50, protein: 25, fat: 25 }
           : { carbs: 45, protein: 25, fat: 30 };
 
-    const pantryCoverage = Math.round((grocery.summary.covered * 100) / Math.max(grocery.summary.total, 1));
-    const shoppingEase = Math.max(0, 100 - (grocery.summary.toBuy * 1.7 + toBuyCategories * 6));
-    const effortEase = Math.max(0, 100 - Math.max(0, avgPrepPerDay - 60) * 1.2);
-    const readinessScore = Math.round(pantryCoverage * 0.46 + shoppingEase * 0.3 + effortEase * 0.24);
-    const pantryBurden = Math.max(0, 100 - pantryCoverage);
+    const shoppingVolume = Math.round(Math.max(0, Math.min(100, grocery.summary.toBuy * 1.7)));
     const categorySpread = (toBuyCategories / Math.max(INGREDIENT_CATEGORIES.length, 1)) * 100;
     const complexityCategoryCount = activeToBuyCategories.filter((category) => COMPLEXITY_CATEGORIES.has(category)).length;
     const complexityRatio = complexityCategoryCount / Math.max(COMPLEXITY_CATEGORIES.size, 1);
-    const shoppingBurden = Math.round(Math.max(0, Math.min(100, categorySpread * 0.72 + complexityRatio * 100 * 0.28)));
+    const shoppingBurden = Math.round(Math.max(0, Math.min(100, shoppingVolume * 0.46 + categorySpread * 0.34 + complexityRatio * 100 * 0.2)));
     const prepBurden = Math.round(Math.max(0, Math.min(100, Math.max(0, avgPrepPerDay - 45) * 1.6)));
+    const readinessScore = Math.round(Math.max(0, 100 - (shoppingBurden * 0.56 + prepBurden * 0.44)));
 
     const readinessState: ReadinessState = readinessScore >= 75 ? "easy" : readinessScore >= 55 ? "manageable" : "heavy";
     const readinessCopy = t.planner.insights.readinessCopy[readinessState];
@@ -89,7 +86,6 @@ export function InsightsWidgets() {
       daily,
       grocerySummary: grocery.summary,
       toBuyCategories,
-      pantryCoverage,
       complianceScore: Math.round((complianceDays / Math.max(daily.length, 1)) * 100),
       complianceDays,
       varietyScore,
@@ -100,11 +96,19 @@ export function InsightsWidgets() {
       readinessScore,
       readinessState,
       readinessCopy,
-      pantryBurden,
       shoppingBurden,
       prepBurden,
     };
-  }, [plan, pantrySelected, targets.dailyCalories, targets.dailyProtein]);
+  }, [plan, targets.dailyCalories, targets.dailyProtein]);
+
+  const readinessTone =
+    metrics.readinessState === "easy"
+      ? "status-chip-strong"
+      : metrics.readinessState === "manageable"
+        ? "status-chip"
+        : "border border-[color:var(--border-glass)] bg-[color:var(--surface-control)] text-[color:var(--text-secondary)]";
+  const ReadinessIcon =
+    metrics.readinessState === "easy" ? CheckCircle2 : metrics.readinessState === "manageable" ? TriangleAlert : TrendingUp;
 
   return (
     <section className="grid gap-3 sm:gap-4 lg:grid-cols-2 lg:items-start">
@@ -147,9 +151,13 @@ export function InsightsWidgets() {
                 <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{t.planner.insights.readinessScore}</p>
                 <p className="mt-0.5 text-2xl font-semibold text-foreground">{metrics.readinessScore}%</p>
               </div>
-              <span className="status-chip-strong rounded-full px-2 py-1 text-xs font-medium capitalize">{t.planner.insights.readinessStates[metrics.readinessState]}</span>
+              <span className={`inline-flex items-center gap-1 rounded-full px-2 py-1 text-xs font-medium capitalize ${readinessTone}`}>
+                <ReadinessIcon className="h-3 w-3" />
+                {t.planner.insights.readinessStates[metrics.readinessState]}
+              </span>
             </div>
             <p className="mt-1.5 text-xs text-muted-foreground">{metrics.readinessCopy}</p>
+            <p className="mt-1 text-[11px] text-muted-foreground">{t.planner.insights.readinessExplain}</p>
             <div className="h-2 overflow-hidden rounded-full bg-[color:var(--accent-primary-muted)]">
               <div
                 className="h-full rounded-full bg-[color:var(--accent-progress)]"
@@ -160,28 +168,17 @@ export function InsightsWidgets() {
             </div>
           </div>
 
-          <div className="grid gap-2.5 sm:grid-cols-3">
-            <GroupTile
-              label={t.planner.insights.pantry}
-              value={`${metrics.pantryCoverage}% ${t.planner.insights.covered}`}
-              helper={`${metrics.grocerySummary.covered} ${t.planner.insights.covered} • ${metrics.grocerySummary.total} ${t.planner.insights.total}`}
-            />
-            <GroupTile
-              label={t.planner.insights.shopping}
-              value={`${metrics.grocerySummary.toBuy} ${t.planner.insights.toBuy}`}
-              helper={`${metrics.toBuyCategories} ${t.planner.insights.activeCategories}`}
-            />
-            <GroupTile
-              label={t.planner.insights.effort}
-              value={`${metrics.avgPrepPerDay}m/${t.planner.insights.perDay}`}
-              helper={`${metrics.avgPrepPerMeal}m ${t.planner.insights.perMeal} • ${metrics.varietyScore}% ${t.planner.insights.variety}`}
-            />
+          <div className="surface-inset rounded-xl p-3">
+            <p className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">{t.planner.insights.scoreBreakdown}</p>
+            <div className="grid gap-2 sm:grid-cols-2">
+              <SimpleMetric label={t.planner.insights.shoppingLoad} value={`${metrics.shoppingBurden}%`} helper={`${metrics.grocerySummary.toBuy} ${t.planner.insights.items} • ${metrics.toBuyCategories} ${t.planner.insights.categoriesToVisit}`} />
+              <SimpleMetric label={t.planner.insights.cookingLoad} value={`${metrics.prepBurden}%`} helper={`${metrics.avgPrepPerDay}${t.planner.insights.minDay} • ${metrics.avgPrepPerMeal}${t.planner.insights.minMeal}`} />
+            </div>
           </div>
 
           <div className="surface-inset rounded-xl p-3">
             <p className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">{t.planner.insights.heavyDrivers}</p>
             <div className="space-y-2.5">
-              <DriverRow label={t.planner.insights.pantryGap} value={metrics.pantryBurden} />
               <DriverRow label={t.planner.insights.shoppingLoad} value={metrics.shoppingBurden} />
               <DriverRow label={t.planner.insights.cookingLoad} value={metrics.prepBurden} />
             </div>
@@ -202,7 +199,7 @@ function SharedTrendRows({
   proteinTarget: number;
 }) {
   return (
-    <div className="surface-inset rounded-xl p-3">
+    <div className="surface-inset rounded-xl p-3 sm:p-4">
       <p className="mb-1.5 text-[11px] text-muted-foreground">{t.planner.insights.weeklyTrends}</p>
       <TrendStrip
         label={t.planner.nutrition.calories}
@@ -238,18 +235,18 @@ function TrendStrip({
   const maxValue = Math.max(target * 1.18, ...values.map((item) => item.value), 1);
   const targetRatio = Math.min(target / maxValue, 1);
   return (
-    <div className="mb-2 last:mb-0">
+    <div className="mb-3 last:mb-0">
       <div className="mb-1 flex items-center justify-between text-[11px]">
         <span className="text-muted-foreground">{label}</span>
         <span className="text-muted-foreground">{target} {unit}</span>
       </div>
       <div className="grid grid-cols-7 gap-1.5">
         {values.map((item) => {
-          const height = Math.max((item.value / maxValue) * 28, 6);
+          const height = Math.max((item.value / maxValue) * 34, 6);
           const state = classifyTarget(item.value, target, tolerance);
           return (
             <div key={`${label}-${item.day}`} className="space-y-1">
-              <div className="relative flex h-8 items-end justify-center rounded-md bg-[color:var(--accent-primary-muted)]/35 px-1">
+              <div className="relative flex h-10 items-end justify-center rounded-md bg-[color:var(--accent-primary-muted)]/35 px-1">
                 <div className="pointer-events-none absolute left-1 right-1 border-t border-dashed border-foreground/25" style={{ bottom: `${targetRatio * 100}%` }} />
                 <div className={barTone(state)} style={{ height }} title={`${item.day}: ${item.value} ${unit}`} />
               </div>
@@ -305,12 +302,12 @@ function CompactStat({ label, value, helper }: { label: string; value: string; h
   );
 }
 
-function GroupTile({ label, value, helper }: { label: string; value: string; helper: string }) {
+function SimpleMetric({ label, value, helper }: { label: string; value: string; helper: string }) {
   return (
-    <div className="control-surface rounded-xl px-2.5 py-2">
+    <div className="control-surface rounded-xl px-3 py-2">
       <p className="text-[11px] text-muted-foreground">{label}</p>
-      <p className="mt-0.5 text-base font-semibold text-foreground">{value}</p>
-      <p className="text-[11px] text-muted-foreground">{helper}</p>
+      <p className="mt-0.5 text-lg font-semibold leading-none text-foreground">{value}</p>
+      <p className="mt-1 text-[11px] text-muted-foreground">{helper}</p>
     </div>
   );
 }
