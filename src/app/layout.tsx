@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { RouteTransitionManager } from "@/components/ui/route-transition-manager";
 import { getSiteUrl } from "@/lib/site-url";
+import { Analytics } from "@vercel/analytics/next";
 
 const sans = Manrope({
   variable: "--font-app-sans",
@@ -55,6 +56,7 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <RouteTransitionManager />
           {children}
+          <Analytics />
         </ThemeProvider>
       </body>
     </html>
