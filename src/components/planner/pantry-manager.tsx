@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 import { usePlannerStore } from "@/store/planner-store";
+import { t } from "@/locales";
 
 const CORE_STAPLES = ["Rice", "Wheat atta", "Cooking oil", "Salt", "Turmeric powder", "Red chili powder"];
 
@@ -43,16 +44,16 @@ export function PantryManager() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Pantry (already at home)</CardTitle>
-        <CardDescription>Mark items you currently have at home. We use this to remove covered ingredients from your weekly buy list.</CardDescription>
+        <CardTitle>{t.planner.pantry.title}</CardTitle>
+        <CardDescription>{t.planner.pantry.description}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-3">
         <div className="surface-inset rounded-xl px-3 py-2.5">
           <div className="mb-2 flex items-center justify-between gap-3">
-            <Label htmlFor="simple-staples">I already have these basic staples</Label>
+            <Label htmlFor="simple-staples">{t.planner.pantry.simpleToggle}</Label>
             <Switch id="simple-staples" checked={simpleEnabled} onCheckedChange={onSimpleToggle} />
           </div>
-          <p className="text-xs text-muted-foreground">Rice, atta, oil, salt, turmeric, chili powder</p>
+          <p className="text-xs text-muted-foreground">{t.planner.pantry.coreListText}</p>
           <div className="mt-2 flex flex-wrap gap-1.5">
             {selectedCore.length ? (
               selectedCore.map((item) => (
@@ -61,13 +62,13 @@ export function PantryManager() {
                 </Badge>
               ))
             ) : (
-              <span className="text-xs text-muted-foreground">No core staples selected</span>
+              <span className="text-xs text-muted-foreground">{t.planner.pantry.noCoreSelected}</span>
             )}
           </div>
         </div>
 
         <div className="surface-inset flex items-center justify-between rounded-xl px-3 py-2 text-sm">
-          <span className="text-muted-foreground">Items marked as at home</span>
+          <span className="text-muted-foreground">{t.planner.pantry.countLabel}</span>
           <span className="font-semibold text-foreground">{selectedCount}</span>
         </div>
 
@@ -77,7 +78,7 @@ export function PantryManager() {
           onClick={() => setShowCustom((current) => !current)}
           type="button"
         >
-          {showCustom ? "Hide pantry checklist" : "Review full pantry checklist"}
+          {showCustom ? t.planner.pantry.hideChecklist : t.planner.pantry.showChecklist}
           <ChevronDown className={`h-4 w-4 transition-transform ${showCustom ? "rotate-180" : ""}`} />
         </Button>
 
@@ -85,14 +86,14 @@ export function PantryManager() {
           <div className="space-y-2">
             <div className="glass-soft flex items-center gap-2 rounded-xl px-3 py-2">
               <Search className="h-4 w-4 text-muted-foreground" />
-              <Input
-                value={search}
-                onChange={(event) => setSearch(event.target.value)}
-                placeholder="Search pantry items"
-                className="h-7 border-0 bg-transparent px-0 text-sm shadow-none focus-visible:ring-0"
-              />
+                <Input
+                  value={search}
+                  onChange={(event) => setSearch(event.target.value)}
+                  placeholder={t.planner.pantry.searchPlaceholder}
+                  className="h-7 border-0 bg-transparent px-0 text-sm shadow-none focus-visible:ring-0"
+                />
               {search ? (
-                <button type="button" aria-label="Clear search" onClick={() => setSearch("")}>
+                <button type="button" aria-label={t.planner.pantry.clearSearchAria} onClick={() => setSearch("")}>
                   <X className="h-4 w-4 text-muted-foreground" />
                 </button>
               ) : null}
@@ -109,7 +110,7 @@ export function PantryManager() {
                 </div>
               );
             })}
-            {!filteredPantry.length ? <p className="py-1 text-sm text-muted-foreground">No pantry staple matches your search.</p> : null}
+            {!filteredPantry.length ? <p className="py-1 text-sm text-muted-foreground">{t.planner.pantry.noMatches}</p> : null}
           </div>
         ) : null}
       </CardContent>

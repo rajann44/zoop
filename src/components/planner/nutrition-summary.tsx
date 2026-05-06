@@ -3,6 +3,7 @@
 import { CheckCircle2, TriangleAlert, TrendingUp } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { usePlannerStore } from "@/store/planner-store";
+import { t } from "@/locales";
 
 export function NutritionSummary() {
   const targets = usePlannerStore((state) => state.nutritionTargets);
@@ -11,11 +12,11 @@ export function NutritionSummary() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Nutrition progress</CardTitle>
+        <CardTitle>{t.planner.nutrition.title}</CardTitle>
       </CardHeader>
       <CardContent className="grid gap-3 sm:grid-cols-2">
-        <Metric label="Calories" target={targets.dailyCalories} planned={totals.avgKcal} unit="kcal" />
-        <Metric label="Protein" target={targets.dailyProtein} planned={totals.avgProtein} unit="g" />
+        <Metric label={t.planner.nutrition.calories} target={targets.dailyCalories} planned={totals.avgKcal} unit="kcal" />
+        <Metric label={t.planner.nutrition.protein} target={targets.dailyProtein} planned={totals.avgProtein} unit="g" />
       </CardContent>
     </Card>
   );
@@ -38,7 +39,13 @@ function Metric({
   const isOnTrack = percentGap <= 0.08;
   const isClose = percentGap > 0.08 && percentGap <= 0.16;
   const delta = planned - target;
-  const statusLabel = isOnTrack ? "On track" : isClose ? "Slightly off" : delta > 0 ? "Above target" : "Below target";
+  const statusLabel = isOnTrack
+    ? t.planner.nutrition.onTrack
+    : isClose
+      ? t.planner.nutrition.slightlyOff
+      : delta > 0
+        ? t.planner.nutrition.aboveTarget
+        : t.planner.nutrition.belowTarget;
   const statusTone = isOnTrack
     ? "status-chip-strong"
     : isClose
@@ -58,13 +65,13 @@ function Metric({
       </div>
       <div className="mt-2 grid grid-cols-2 gap-2 text-sm">
         <div className="control-surface rounded-lg px-2.5 py-2">
-          <p className="text-[11px] text-muted-foreground">Target</p>
+          <p className="text-[11px] text-muted-foreground">{t.planner.nutrition.target}</p>
           <p className="mt-0.5 text-base font-semibold text-foreground">
             {target} {unit}
           </p>
         </div>
         <div className="control-surface rounded-lg px-2.5 py-2">
-          <p className="text-[11px] text-muted-foreground">Planned avg</p>
+          <p className="text-[11px] text-muted-foreground">{t.planner.nutrition.plannedAvg}</p>
           <p className="mt-0.5 text-base font-semibold text-foreground">
             {planned} {unit}
           </p>
@@ -75,7 +82,9 @@ function Metric({
           <div className="h-full rounded-full bg-[color:var(--accent-progress)] transition-all" style={{ width: `${progress}%` }} />
         </div>
         <p className="mt-1.5 text-xs text-muted-foreground">
-          {roundedDelta === 0 ? "Exactly on target" : `${roundedDelta > 0 ? "+" : ""}${roundedDelta} ${unit} vs target`}
+          {roundedDelta === 0
+            ? t.planner.nutrition.exactTarget
+            : `${roundedDelta > 0 ? "+" : ""}${roundedDelta} ${unit} ${t.planner.nutrition.vsTarget}`}
         </p>
       </div>
     </div>

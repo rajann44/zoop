@@ -5,8 +5,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { toTitleCase } from "@/lib/utils";
 import { buildGroceryBreakdown } from "@/lib/grocery";
 import { usePlannerStore } from "@/store/planner-store";
+import { t } from "@/locales";
 
 const slots = ["breakfast", "lunch", "dinner", "snack"] as const;
+type ReadinessState = "easy" | "manageable" | "heavy";
 
 export function InsightsWidgets() {
   const plan = usePlannerStore((state) => state.weeklyPlan);
@@ -72,13 +74,8 @@ export function InsightsWidgets() {
     const shoppingBurden = Math.round(Math.max(0, Math.min(100, grocery.summary.toBuy * 1.7 + toBuyCategories * 6)));
     const prepBurden = Math.round(Math.max(0, Math.min(100, Math.max(0, avgPrepPerDay - 45) * 1.6)));
 
-    const readinessState = readinessScore >= 75 ? "easy" : readinessScore >= 55 ? "manageable" : "heavy";
-    const readinessCopy =
-      readinessState === "easy"
-        ? "This week should be easy to execute with light shopping and manageable prep."
-        : readinessState === "manageable"
-          ? "This week is manageable. Consider one regenerate if you want less shopping or prep."
-          : "This week looks heavy. Regenerate once to reduce prep load or shopping effort.";
+    const readinessState: ReadinessState = readinessScore >= 75 ? "easy" : readinessScore >= 55 ? "manageable" : "heavy";
+    const readinessCopy = t.planner.insights.readinessCopy[readinessState];
 
     return {
       daily,
@@ -105,15 +102,15 @@ export function InsightsWidgets() {
     <section className="grid gap-3 sm:gap-4 lg:grid-cols-2 lg:items-start">
       <Card>
         <CardHeader>
-          <CardTitle>Weekly nutrition balance</CardTitle>
-          <CardDescription>How closely your 7-day plan stays aligned with nutrition targets.</CardDescription>
+          <CardTitle>{t.planner.insights.nutritionBalanceTitle}</CardTitle>
+          <CardDescription>{t.planner.insights.nutritionBalanceDescription}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-2.5">
           <div className="surface-inset rounded-xl p-3">
             <div className="grid gap-2 sm:grid-cols-3">
-              <CompactStat label="On target" value={`${metrics.complianceDays}/${metrics.daily.length}`} helper={`${metrics.complianceScore}% week`} />
-              <CompactStat label="Calories" value={`${plan.totals.avgKcal} kcal`} helper={`${formatDelta(plan.totals.avgKcal - targets.dailyCalories)} vs target`} />
-              <CompactStat label="Protein" value={`${plan.totals.avgProtein}g`} helper={`${formatDelta(plan.totals.avgProtein - targets.dailyProtein)}g vs target`} />
+              <CompactStat label={t.planner.insights.onTarget} value={`${metrics.complianceDays}/${metrics.daily.length}`} helper={`${metrics.complianceScore}% ${t.planner.insights.weekSuffix}`} />
+              <CompactStat label={t.planner.nutrition.calories} value={`${plan.totals.avgKcal} kcal`} helper={`${formatDelta(plan.totals.avgKcal - targets.dailyCalories)} ${t.planner.nutrition.vsTarget}`} />
+              <CompactStat label={t.planner.nutrition.protein} value={`${plan.totals.avgProtein}g`} helper={`${formatDelta(plan.totals.avgProtein - targets.dailyProtein)}g ${t.planner.nutrition.vsTarget}`} />
             </div>
           </div>
 
@@ -124,7 +121,7 @@ export function InsightsWidgets() {
           />
 
           <div className="surface-inset rounded-xl p-3">
-            <p className="mb-1.5 text-[11px] text-muted-foreground">Macro vs target ({toTitleCase(plan.profile.goal)})</p>
+            <p className="mb-1.5 text-[11px] text-muted-foreground">{t.planner.insights.macroVsTarget} ({toTitleCase(plan.profile.goal)})</p>
             <MacroFlatRow macroMix={metrics.macroMix} macroTargets={metrics.macroTargets} />
           </div>
         </CardContent>
@@ -132,17 +129,17 @@ export function InsightsWidgets() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Plan readiness</CardTitle>
-          <CardDescription>Execution difficulty based on pantry coverage, shopping load, and prep effort.</CardDescription>
+          <CardTitle>{t.planner.insights.planReadinessTitle}</CardTitle>
+          <CardDescription>{t.planner.insights.planReadinessDescription}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
           <div className="surface-inset rounded-xl p-3">
             <div className="flex items-end justify-between gap-3">
               <div>
-                <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Readiness score</p>
+                <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{t.planner.insights.readinessScore}</p>
                 <p className="mt-0.5 text-2xl font-semibold text-foreground">{metrics.readinessScore}%</p>
               </div>
-              <span className="status-chip-strong rounded-full px-2 py-1 text-xs font-medium capitalize">{metrics.readinessState}</span>
+              <span className="status-chip-strong rounded-full px-2 py-1 text-xs font-medium capitalize">{t.planner.insights.readinessStates[metrics.readinessState]}</span>
             </div>
             <p className="mt-1.5 text-xs text-muted-foreground">{metrics.readinessCopy}</p>
             <div className="h-2 overflow-hidden rounded-full bg-[color:var(--accent-primary-muted)]">
@@ -157,28 +154,28 @@ export function InsightsWidgets() {
 
           <div className="grid gap-2.5 sm:grid-cols-3">
             <GroupTile
-              label="Pantry"
-              value={`${metrics.pantryCoverage}% covered`}
-              helper={`${metrics.grocerySummary.covered} covered • ${metrics.grocerySummary.total} total`}
+              label={t.planner.insights.pantry}
+              value={`${metrics.pantryCoverage}% ${t.planner.insights.covered}`}
+              helper={`${metrics.grocerySummary.covered} ${t.planner.insights.covered} • ${metrics.grocerySummary.total} ${t.planner.insights.total}`}
             />
             <GroupTile
-              label="Shopping"
-              value={`${metrics.grocerySummary.toBuy} to buy`}
-              helper={`${metrics.toBuyCategories} active categories`}
+              label={t.planner.insights.shopping}
+              value={`${metrics.grocerySummary.toBuy} ${t.planner.insights.toBuy}`}
+              helper={`${metrics.toBuyCategories} ${t.planner.insights.activeCategories}`}
             />
             <GroupTile
-              label="Effort"
-              value={`${metrics.avgPrepPerDay}m/day`}
-              helper={`${metrics.avgPrepPerMeal}m per meal • ${metrics.varietyScore}% variety`}
+              label={t.planner.insights.effort}
+              value={`${metrics.avgPrepPerDay}m/${t.planner.insights.perDay}`}
+              helper={`${metrics.avgPrepPerMeal}m ${t.planner.insights.perMeal} • ${metrics.varietyScore}% ${t.planner.insights.variety}`}
             />
           </div>
 
           <div className="surface-inset rounded-xl p-3">
-            <p className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">What makes this week heavy</p>
+            <p className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">{t.planner.insights.heavyDrivers}</p>
             <div className="space-y-2.5">
-              <DriverRow label="Pantry gap" value={metrics.pantryBurden} />
-              <DriverRow label="Shopping load" value={metrics.shoppingBurden} />
-              <DriverRow label="Cooking load" value={metrics.prepBurden} />
+              <DriverRow label={t.planner.insights.pantryGap} value={metrics.pantryBurden} />
+              <DriverRow label={t.planner.insights.shoppingLoad} value={metrics.shoppingBurden} />
+              <DriverRow label={t.planner.insights.cookingLoad} value={metrics.prepBurden} />
             </div>
           </div>
         </CardContent>
@@ -198,16 +195,16 @@ function SharedTrendRows({
 }) {
   return (
     <div className="surface-inset rounded-xl p-3">
-      <p className="mb-1.5 text-[11px] text-muted-foreground">Weekly trends</p>
+      <p className="mb-1.5 text-[11px] text-muted-foreground">{t.planner.insights.weeklyTrends}</p>
       <TrendStrip
-        label="Calories"
+        label={t.planner.nutrition.calories}
         unit="kcal"
         values={daily.map((day) => ({ day: day.day, value: day.calories }))}
         target={calorieTarget}
         tolerance={0.12}
       />
       <TrendStrip
-        label="Protein"
+        label={t.planner.nutrition.protein}
         unit="g"
         values={daily.map((day) => ({ day: day.day, value: day.protein }))}
         target={proteinTarget}
@@ -285,7 +282,7 @@ function MacroMini({ label, actual, target }: { label: string; actual: number; t
         <div className="h-full rounded-full bg-[color:var(--accent-progress)]" style={{ width: `${Math.min(actual, 100)}%` }} />
         <div className="pointer-events-none absolute bottom-0 top-0 w-px bg-foreground/45" style={{ left: `${marker}%` }} />
       </div>
-      <p className="mt-1 text-[10px] text-muted-foreground">tgt {target}%</p>
+      <p className="mt-1 text-[10px] text-muted-foreground">{t.planner.insights.targetShort} {target}%</p>
     </div>
   );
 }

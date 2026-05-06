@@ -6,6 +6,7 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogHeader, Di
 import { getPortionHint } from "@/lib/portion";
 import type { Goal, Meal } from "@/types/planner";
 import { toTitleCase } from "@/lib/utils";
+import { t } from "@/locales";
 
 type MealDetailDialogProps = {
   meal: Meal | null;
@@ -20,8 +21,8 @@ export function MealDetailDialog({ meal, goal, open, onOpenChange }: MealDetailD
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Meal details</DialogTitle>
-            <DialogDescription>No meal selected.</DialogDescription>
+            <DialogTitle>{t.planner.mealDetail.title}</DialogTitle>
+            <DialogDescription>{t.planner.mealDetail.noMeal}</DialogDescription>
           </DialogHeader>
         </DialogContent>
       </Dialog>
@@ -37,40 +38,40 @@ export function MealDetailDialog({ meal, goal, open, onOpenChange }: MealDetailD
         <DialogHeader>
           <DialogTitle className="max-w-[92%] text-xl leading-tight">{meal.name}</DialogTitle>
           <DialogDescription>
-            {toTitleCase(meal.mealType)} • {meal.prepTimeMin} min prep
+            {toTitleCase(meal.mealType)} • {meal.prepTimeMin} {t.planner.mealDetail.prepSuffix}
           </DialogDescription>
         </DialogHeader>
 
         <div className="grid grid-cols-2 gap-2.5 text-sm sm:grid-cols-4 sm:gap-3">
           <div className="glass-soft rounded-xl p-3">
-            <div className="text-xs text-muted-foreground">kcal</div>
+            <div className="text-xs text-muted-foreground">{t.planner.mealDetail.kcal}</div>
             <div className="font-semibold">{meal.kcal}</div>
           </div>
           <div className="glass-soft rounded-xl p-3">
-            <div className="text-xs text-muted-foreground">Protein</div>
+            <div className="text-xs text-muted-foreground">{t.planner.nutrition.protein}</div>
             <div className="font-semibold">{meal.protein} g</div>
           </div>
           <div className="glass-soft rounded-xl p-3">
-            <div className="text-xs text-muted-foreground">Carbs</div>
+            <div className="text-xs text-muted-foreground">{t.planner.mealDetail.carbs}</div>
             <div className="font-semibold">{meal.carbs} g</div>
           </div>
           <div className="glass-soft rounded-xl p-3">
-            <div className="text-xs text-muted-foreground">Fat</div>
+            <div className="text-xs text-muted-foreground">{t.planner.mealDetail.fat}</div>
             <div className="font-semibold">{meal.fat} g</div>
           </div>
         </div>
 
         {portionHint ? (
           <div className="glass-soft rounded-xl p-3 text-sm">
-            <span className="text-muted-foreground">Suggested serving for your goal: </span>
+            <span className="text-muted-foreground">{t.planner.mealDetail.suggestedServing} </span>
             <span className="font-medium text-foreground">{portionHint}</span>
           </div>
         ) : null}
 
         <div className="surface-inset overflow-hidden rounded-xl">
           <div className="flex items-center justify-between border-b border-border/70 px-3 py-2.5">
-            <h4 className="text-sm font-semibold">Ingredients</h4>
-            <span className="text-xs text-muted-foreground">{meal.ingredients.length} items</span>
+            <h4 className="text-sm font-semibold">{t.planner.mealDetail.ingredients}</h4>
+            <span className="text-xs text-muted-foreground">{meal.ingredients.length} {t.planner.mealDetail.itemSuffix}</span>
           </div>
           <ul className="divide-y divide-border/55">
             {meal.ingredients.map((ingredient) => (
@@ -85,10 +86,10 @@ export function MealDetailDialog({ meal, goal, open, onOpenChange }: MealDetailD
         </div>
 
         <div className="surface-inset rounded-xl p-3">
-          <p className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">Meal tags</p>
+          <p className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">{t.planner.mealDetail.mealTags}</p>
           <div className="flex flex-wrap gap-2">
             <Badge variant="neutral">{toTitleCase(meal.dietType)}</Badge>
-            <Badge variant="neutral">Protein {toTitleCase(meal.proteinLevel)}</Badge>
+            <Badge variant="neutral">{t.planner.mealDetail.proteinPrefix} {toTitleCase(meal.proteinLevel)}</Badge>
             {meal.mealStyleTags.map((tag) => (
               <Badge key={`${meal.id}-${tag}`} variant="outline">
                 {toTitleCase(tag)}
@@ -98,16 +99,16 @@ export function MealDetailDialog({ meal, goal, open, onOpenChange }: MealDetailD
         </div>
 
         <div className="control-surface flex items-center justify-between rounded-xl px-3 py-2.5">
-          <p className="text-xs text-muted-foreground">Want a quick recipe walkthrough?</p>
+          <p className="text-xs text-muted-foreground">{t.planner.mealDetail.walkthroughPrompt}</p>
           <div className="flex items-center gap-2">
             <DialogClose asChild>
               <Button size="sm" variant="ghost" className="h-8 px-3 text-xs">
-                Close
+                {t.planner.mealDetail.close}
               </Button>
             </DialogClose>
             <Button asChild size="sm" variant="secondary" className="h-8 px-3 text-xs">
               <a href={youtubeUrl} target="_blank" rel="noreferrer noopener">
-                Watch on YouTube
+                {t.planner.mealDetail.watchYoutube}
               </a>
             </Button>
           </div>

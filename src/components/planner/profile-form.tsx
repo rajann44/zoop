@@ -22,11 +22,12 @@ import {
 } from "@/types/planner";
 import { toTitleCase } from "@/lib/utils";
 import { usePlannerStore } from "@/store/planner-store";
+import { t } from "@/locales";
 
 const numberFieldConfig = [
-  { key: "age", label: "Age", min: 15, max: 80, step: 1 },
-  { key: "weightKg", label: "Weight (kg)", min: 35, max: 180, step: 1 },
-  { key: "heightCm", label: "Height (cm)", min: 130, max: 220, step: 1 },
+  { key: "age", label: t.planner.profileForm.fields.age, min: 15, max: 80, step: 1 },
+  { key: "weightKg", label: t.planner.profileForm.fields.weightKg, min: 35, max: 180, step: 1 },
+  { key: "heightCm", label: t.planner.profileForm.fields.heightCm, min: 130, max: 220, step: 1 },
 ] as const;
 
 export function ProfileForm() {
@@ -44,22 +45,22 @@ export function ProfileForm() {
   return (
     <Card className="glass-sidebar flex h-full min-h-0 flex-col overflow-hidden">
       <CardHeader className="shrink-0 space-y-1.5 pb-3">
-        <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">Plan setup</p>
-        <CardTitle>Create your weekly plan</CardTitle>
-        <CardDescription>Set your core preferences and generate a plan in one tap.</CardDescription>
+        <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">{t.planner.profileForm.planSetup}</p>
+        <CardTitle>{t.planner.profileForm.createWeeklyPlan}</CardTitle>
+        <CardDescription>{t.planner.profileForm.setupDescription}</CardDescription>
       </CardHeader>
       <CardContent className="!p-0 flex min-h-0 flex-1 flex-col">
         <div className="sidebar-scroll flex-1 space-y-4 overflow-y-auto px-4 pb-6 sm:px-5">
           <section className="space-y-2 pt-1">
-            <p className="text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">Quick start</p>
+            <p className="text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">{t.planner.profileForm.quickStart}</p>
             <div className="surface-inset rounded-xl p-3">
               <Label className="text-sm" htmlFor="sample-profile">
-                Load a sample profile (optional)
+                {t.planner.profileForm.sampleProfileLabel}
               </Label>
-              <p className="mt-0.5 text-xs text-muted-foreground">Prefills values to preview faster.</p>
+              <p className="mt-0.5 text-xs text-muted-foreground">{t.planner.profileForm.sampleProfileHint}</p>
               <Select onValueChange={loadSampleProfile}>
                 <SelectTrigger id="sample-profile" className="mt-2">
-                  <SelectValue placeholder="Choose sample" />
+                  <SelectValue placeholder={t.planner.profileForm.samplePlaceholder} />
                 </SelectTrigger>
                 <SelectContent>
                   {SAMPLE_PROFILES.map((sample) => (
@@ -75,9 +76,9 @@ export function ProfileForm() {
           <Separator />
 
           <section className="space-y-2.5">
-            <p className="text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">Preferences</p>
+            <p className="text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">{t.planner.profileForm.preferences}</p>
 
-            <Field label="State" id="state">
+            <Field label={t.planner.profileForm.fields.state} id="state">
               <Select value={profile.state} onValueChange={(value) => update("state", value as UserProfile["state"])}>
                 <SelectTrigger id="state">
                   <SelectValue />
@@ -92,23 +93,17 @@ export function ProfileForm() {
               </Select>
             </Field>
 
-            <Field label="Goal" id="goal">
+            <Field label={t.planner.profileForm.fields.goal} id="goal">
               <SegmentedControl
                 id="goal"
                 value={profile.goal}
                 options={GOALS}
                 onChange={(value) => update("goal", value as UserProfile["goal"])}
-                getLabel={(value) =>
-                  value === "fat loss"
-                    ? "Fat loss"
-                    : value === "muscle gain"
-                      ? "Gain"
-                      : "Maintain"
-                }
+                getLabel={(value) => t.planner.profileForm.goalLabels[value]}
               />
             </Field>
 
-            <Field label="Diet" id="dietType">
+            <Field label={t.planner.profileForm.fields.diet} id="dietType">
               <Select value={profile.dietType} onValueChange={(value) => update("dietType", value as UserProfile["dietType"])}>
                 <SelectTrigger id="dietType">
                   <SelectValue />
@@ -123,7 +118,7 @@ export function ProfileForm() {
               </Select>
             </Field>
 
-            <Field label="Protein focus" id="proteinFocus">
+            <Field label={t.planner.profileForm.fields.proteinFocus} id="proteinFocus">
               <SegmentedControl
                 id="proteinFocus"
                 value={profile.proteinFocus}
@@ -133,7 +128,7 @@ export function ProfileForm() {
               />
             </Field>
 
-            <Field label="Meal style" id="mealStyle">
+            <Field label={t.planner.profileForm.fields.mealStyle} id="mealStyle">
               <Select value={profile.mealStyle} onValueChange={(value) => update("mealStyle", value as UserProfile["mealStyle"])}>
                 <SelectTrigger id="mealStyle">
                   <SelectValue />
@@ -159,20 +154,28 @@ export function ProfileForm() {
               aria-expanded={showAdvanced}
               aria-controls="advanced-settings"
             >
-              <span>
-                <span className="block text-sm font-medium">Advanced settings</span>
-                <span className="block text-xs text-muted-foreground">Optional body metrics for finer targets</span>
+                <span>
+                <span className="block text-sm font-medium">{t.planner.profileForm.advancedSettings}</span>
+                <span className="block text-xs text-muted-foreground">{t.planner.profileForm.advancedHint}</span>
               </span>
               <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${showAdvanced ? "rotate-180" : ""}`} />
             </button>
 
             {showAdvanced ? (
               <div id="advanced-settings" className="surface-inset space-y-2.5 rounded-xl p-3">
-                <Field label="Sex" id="sex">
-                  <SegmentedControl id="sex" value={profile.sex} options={SEX_TYPES} onChange={(value) => update("sex", value as UserProfile["sex"])} getLabel={toTitleCase} />
+                <Field label={t.planner.profileForm.fields.sex} id="sex">
+                  <SegmentedControl
+                    id="sex"
+                    value={profile.sex}
+                    options={SEX_TYPES}
+                    onChange={(value) => update("sex", value as UserProfile["sex"])}
+                    getLabel={toTitleCase}
+                    fullWidth={false}
+                    compact
+                  />
                 </Field>
 
-                <Field label="Activity" id="activityLevel">
+                <Field label={t.planner.profileForm.fields.activity} id="activityLevel">
                   <Select value={profile.activityLevel} onValueChange={(value) => update("activityLevel", value as UserProfile["activityLevel"])}>
                     <SelectTrigger id="activityLevel">
                       <SelectValue />
@@ -209,7 +212,7 @@ export function ProfileForm() {
 
         <div className="shrink-0 border-t border-[color:var(--border-glass)] bg-[color:var(--surface-glass-header)]/70 px-4 py-3 backdrop-blur-xl shadow-[inset_0_1px_0_rgb(255_255_255_/_0.52)] sm:px-5">
           <Button className="h-10 w-full" onClick={regenerate} disabled={isGenerating}>
-            {isGenerating ? "Generating plan..." : "Generate weekly plan"}
+            {isGenerating ? t.planner.profileForm.generating : t.planner.profileForm.generatePlan}
           </Button>
         </div>
       </CardContent>

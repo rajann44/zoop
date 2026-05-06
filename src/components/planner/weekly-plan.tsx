@@ -12,6 +12,7 @@ import { exportWeeklyPlanPdf } from "@/lib/export-weekly-plan-pdf";
 import type { Meal } from "@/types/planner";
 import { usePlannerStore } from "@/store/planner-store";
 import { toTitleCase } from "@/lib/utils";
+import { t } from "@/locales";
 
 const slots = ["breakfast", "lunch", "dinner", "snack"] as const;
 
@@ -51,8 +52,8 @@ export function WeeklyPlanSection() {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>No weekly plan yet</CardTitle>
-          <CardDescription>Fill your preferences and generate your first 7-day plan.</CardDescription>
+          <CardTitle>{t.planner.weeklyPlan.noPlanTitle}</CardTitle>
+          <CardDescription>{t.planner.weeklyPlan.noPlanDescription}</CardDescription>
         </CardHeader>
       </Card>
     );
@@ -62,7 +63,7 @@ export function WeeklyPlanSection() {
     <>
       <div className="space-y-4">
         <div className="flex items-center justify-between gap-2">
-          <p className="text-sm font-medium text-muted-foreground">Weekly meals</p>
+          <p className="text-sm font-medium text-muted-foreground">{t.planner.weeklyPlan.sectionTitle}</p>
           <Button
             variant="secondary"
             size="sm"
@@ -70,15 +71,15 @@ export function WeeklyPlanSection() {
             onClick={() => exportWeeklyPlanPdf({ plan, targets: nutritionTargets, groceryByCategory })}
           >
             <FileDown className="mr-1.5 h-4 w-4" />
-            Export PDF
+            {t.planner.weeklyPlan.exportPdf}
           </Button>
         </div>
 
         {visibleDays.map((day) => (
           <Card key={day.day}>
             <CardHeader>
-              <CardTitle>{showFullWeek ? day.day : `Today (${day.day})`}</CardTitle>
-              <CardDescription>{plan.profile.state} preference • solo portions • {showFullWeek ? "full-week view" : "focus view"}</CardDescription>
+              <CardTitle>{showFullWeek ? day.day : `${t.planner.weeklyPlan.todayPrefix} (${day.day})`}</CardTitle>
+              <CardDescription>{plan.profile.state} preference • {t.planner.weeklyPlan.soloPortions} • {showFullWeek ? t.planner.weeklyPlan.fullWeekView : t.planner.weeklyPlan.focusView}</CardDescription>
             </CardHeader>
             <CardContent className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
               {slots.map((slot) => {
@@ -122,7 +123,7 @@ export function WeeklyPlanSection() {
                       }}
                     >
                       <Eye className="mr-1 h-3.5 w-3.5" />
-                      View detail
+                      {t.planner.weeklyPlan.viewDetail}
                     </Button>
                   </div>
                 );
@@ -132,7 +133,7 @@ export function WeeklyPlanSection() {
         ))}
 
         <Button variant="secondary" className="h-9 w-full justify-between" onClick={() => setShowFullWeek((current) => !current)}>
-          {showFullWeek ? "Show only today" : "View full week"}
+          {showFullWeek ? t.planner.weeklyPlan.showOnlyToday : t.planner.weeklyPlan.viewFullWeek}
           <ChevronDown className={`h-4 w-4 transition-transform ${showFullWeek ? "rotate-180" : ""}`} />
         </Button>
       </div>

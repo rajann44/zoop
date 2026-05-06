@@ -9,6 +9,8 @@ type SegmentedControlProps<T extends string> = {
   onChange: (value: T) => void;
   getLabel: (value: T) => string;
   className?: string;
+  fullWidth?: boolean;
+  compact?: boolean;
 };
 
 export function SegmentedControl<T extends string>({
@@ -18,9 +20,15 @@ export function SegmentedControl<T extends string>({
   onChange,
   getLabel,
   className,
+  fullWidth = true,
+  compact = false,
 }: SegmentedControlProps<T>) {
   return (
-    <div id={id} role="radiogroup" className={cn("control-surface inline-flex w-full items-center gap-1 rounded-xl p-1", className)}>
+    <div
+      id={id}
+      role="radiogroup"
+      className={cn("control-surface inline-flex items-center gap-1 rounded-xl p-1", fullWidth ? "w-full" : "w-auto", className)}
+    >
       {options.map((option) => {
         const selected = option === value;
         return (
@@ -31,7 +39,9 @@ export function SegmentedControl<T extends string>({
             aria-checked={selected}
             onClick={() => onChange(option)}
             className={cn(
-              "h-9 min-w-0 flex-1 rounded-lg px-1.5 text-center text-xs font-medium leading-none whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+              "min-w-0 rounded-lg text-center font-medium leading-none whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+              fullWidth ? "flex-1" : "flex-none",
+              compact ? "h-8 px-4 text-sm" : "h-9 px-1.5 text-xs",
               selected
                 ? "bg-accent text-accent-foreground shadow-[0_1px_1px_rgb(0_0_0_/_0.08)]"
                 : "text-foreground/75 hover:bg-[color:var(--accent-primary-muted)]",

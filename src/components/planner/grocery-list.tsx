@@ -5,6 +5,7 @@ import { ChevronDown } from "lucide-react";
 import { usePlannerStore } from "@/store/planner-store";
 import { INGREDIENT_CATEGORIES } from "@/types/planner";
 import { buildGroceryBreakdown } from "@/lib/grocery";
+import { t } from "@/locales";
 
 export function GroceryList() {
   const plan = usePlannerStore((state) => state.weeklyPlan);
@@ -16,13 +17,13 @@ export function GroceryList() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Weekly grocery list</CardTitle>
-        <CardDescription>This is what you need to buy this week. Items already in your pantry are separated below.</CardDescription>
+        <CardTitle>{t.planner.grocery.title}</CardTitle>
+        <CardDescription>{t.planner.grocery.description}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-2.5">
         <div className="surface-inset flex items-center justify-between rounded-xl px-3 py-2 text-sm">
-          <span className="text-muted-foreground">{breakdown.summary.total} total ingredients planned</span>
-          <span className="font-medium text-foreground">{breakdown.summary.toBuy} to buy • {breakdown.summary.covered} covered</span>
+          <span className="text-muted-foreground">{breakdown.summary.total} {t.planner.grocery.totalIngredientsSuffix}</span>
+          <span className="font-medium text-foreground">{breakdown.summary.toBuy} {t.planner.grocery.toBuy} • {breakdown.summary.covered} {t.planner.grocery.covered}</span>
         </div>
 
         {INGREDIENT_CATEGORIES.map((category) => {
@@ -46,7 +47,7 @@ export function GroceryList() {
                     ))}
                   </ul>
                 ) : (
-                  <p className="py-1 text-sm text-muted-foreground">Nothing to buy in this category.</p>
+                  <p className="py-1 text-sm text-muted-foreground">{t.planner.grocery.emptyCategory}</p>
                 )}
               </div>
             </details>
@@ -55,7 +56,7 @@ export function GroceryList() {
 
         <details className="surface-inset group rounded-xl">
           <summary className="flex cursor-pointer list-none items-center justify-between px-3 py-2 text-sm font-medium">
-            Already at home (pantry)
+            {t.planner.grocery.pantrySection}
             <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform group-open:rotate-180" />
           </summary>
           <div className="border-t border-border px-3 py-2">
@@ -82,7 +83,7 @@ export function GroceryList() {
                 })}
               </div>
             ) : (
-              <p className="py-1 text-sm text-muted-foreground">No ingredient is currently marked as pantry-covered.</p>
+              <p className="py-1 text-sm text-muted-foreground">{t.planner.grocery.noCovered}</p>
             )}
           </div>
         </details>
