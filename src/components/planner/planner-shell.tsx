@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { GroceryList } from "@/components/planner/grocery-list";
+import { InsightsWidgets } from "@/components/planner/insights-widgets";
 import { NutritionSummary } from "@/components/planner/nutrition-summary";
 import { PantryManager } from "@/components/planner/pantry-manager";
 import { ProfileForm } from "@/components/planner/profile-form";
@@ -31,6 +32,7 @@ export function PlannerShell() {
 
           <section className="space-y-3 sm:space-y-4">
             <NutritionSummary />
+            <InsightsWidgets />
             <WeeklyPlanSection />
             <PantryManager />
             <GroceryList />
