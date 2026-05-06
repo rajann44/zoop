@@ -91,6 +91,10 @@ export const en = {
       plannedAvg: "Planned avg",
       exactTarget: "Exactly on target",
       vsTarget: "vs target",
+      sourceTitle: "How targets are estimated",
+      sourceBody:
+        "Calories use Mifflin-St Jeor BMR + activity multiplier + goal adjustment. Protein uses body-weight g/kg ranges tuned by goal and protein focus.",
+      sourceNote: "Guidance only, not medical advice.",
     },
     weeklyPlan: {
       sectionTitle: "Weekly meals",

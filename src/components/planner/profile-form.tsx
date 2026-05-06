@@ -130,6 +130,12 @@ export function ProfileForm() {
                 </SelectContent>
               </Select>
             </Field>
+
+            <div className="surface-inset rounded-xl px-3 py-2.5">
+              <p className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">{t.planner.nutrition.sourceTitle}</p>
+              <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{t.planner.nutrition.sourceBody}</p>
+              <p className="mt-1 text-[11px] text-muted-foreground">{t.planner.nutrition.sourceNote}</p>
+            </div>
           </section>
 
           <Separator />
