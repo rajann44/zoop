@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Fraunces, Manrope } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
+import { RouteTransitionManager } from "@/components/ui/route-transition-manager";
 import { getSiteUrl } from "@/lib/site-url";
 
 const sans = Manrope({
@@ -52,6 +53,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <RouteTransitionManager />
           {children}
         </ThemeProvider>
       </body>

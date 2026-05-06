@@ -92,6 +92,62 @@ body {
   background-attachment: fixed;
 }
 
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(90% 70% at 50% 18%, rgb(255 255 255 / 0.2) 0%, rgb(255 255 255 / 0) 68%);
+  opacity: 0;
+  transform: scale(1.012);
+  transition: opacity 260ms ease, transform 320ms ease;
+  z-index: 999;
+}
+
+body.route-transitioning {
+  overflow: hidden;
+}
+
+body.route-transitioning main {
+  opacity: 0.68;
+  transform: translateY(6px) scale(0.992);
+  filter: saturate(0.94) blur(1.2px);
+  transition: opacity 180ms ease, transform 180ms ease, filter 180ms ease;
+}
+
+body.route-transitioning::after {
+  opacity: 1;
+  transform: scale(1);
+}
+
+body.route-entering main {
+  animation: route-content-enter 260ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes route-content-enter {
+  from {
+    opacity: 0.72;
+    transform: translateY(10px) scale(0.994);
+    filter: saturate(0.95) blur(1px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body::after,
+  body.route-transitioning main,
+  body.route-entering main {
+    transition: none;
+    animation: none;
+    transform: none;
+    filter: none;
+  }
+}
+
 .liquid-canvas {
   position: relative;
   isolation: isolate;
@@ -141,7 +197,7 @@ body {
   border: 1px solid var(--border-glass);
   background: linear-gradient(180deg, var(--surface-glass-panel) 0%, rgb(255 255 255 / 0.2) 100%);
   backdrop-filter: blur(20px) saturate(138%);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.58), 0 10px 26px rgb(17 55 101 / 0.12);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.58), 0 7px 18px rgb(17 55 101 / 0.1);
 }
 
 .glass-soft {
@@ -152,23 +208,36 @@ body {
 
 .glass-header {
   border: 1px solid var(--border-glass);
-  background: linear-gradient(180deg, var(--surface-glass-header) 0%, rgb(255 255 255 / 0.24) 100%);
+  background: linear-gradient(180deg, var(--surface-glass-header) 0%, rgb(255 255 255 / 0.3) 100%);
   backdrop-filter: blur(24px) saturate(145%);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.64), 0 10px 24px rgb(17 55 101 / 0.11);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.66), 0 6px 16px rgb(17 55 101 / 0.1);
+  transition: background-color 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+
+body.header-scrolled .glass-header {
+  background: linear-gradient(180deg, rgb(255 255 255 / 0.72) 0%, rgb(255 255 255 / 0.52) 100%);
+  border-color: rgb(255 255 255 / 0.72);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.76), 0 8px 18px rgb(17 55 101 / 0.12);
+}
+
+.dark body.header-scrolled .glass-header {
+  background: linear-gradient(180deg, rgb(20 34 56 / 0.82) 0%, rgb(17 30 49 / 0.72) 100%);
+  border-color: rgb(180 205 240 / 0.28);
+  box-shadow: inset 0 1px 0 rgb(200 222 248 / 0.22), 0 8px 18px rgb(6 14 27 / 0.45);
 }
 
 .glass-sidebar {
   border: 1px solid var(--border-glass);
   background: linear-gradient(180deg, var(--surface-glass-sidebar) 0%, rgb(255 255 255 / 0.2) 100%);
   backdrop-filter: blur(20px) saturate(136%);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.62), 0 8px 24px rgb(17 55 101 / 0.1);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.62), 0 6px 18px rgb(17 55 101 / 0.1);
 }
 
 .glass-panel {
   border: 1px solid var(--border-glass);
   background: linear-gradient(180deg, var(--surface-glass-panel) 0%, rgb(255 255 255 / 0.18) 100%);
   backdrop-filter: blur(18px) saturate(132%);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.58), 0 8px 22px rgb(17 55 101 / 0.1);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.58), 0 6px 16px rgb(17 55 101 / 0.09);
 }
 
 .surface-inset {
@@ -181,7 +250,59 @@ body {
 .control-surface {
   border: 1px solid var(--border-glass);
   background: linear-gradient(180deg, var(--surface-control) 0%, rgb(255 255 255 / 0.18) 100%);
-  backdrop-filter: blur(10px) saturate(122%);
+  backdrop-filter: blur(8px) saturate(118%);
+}
+
+@media (prefers-contrast: more) {
+  .glass,
+  .glass-header,
+  .glass-sidebar,
+  .glass-panel,
+  .surface-inset,
+  .control-surface,
+  .status-chip {
+    backdrop-filter: none;
+    border-color: rgb(255 255 255 / 0.85);
+    background: rgb(255 255 255 / 0.9);
+    box-shadow: none;
+  }
+
+  .dark .glass,
+  .dark .glass-header,
+  .dark .glass-sidebar,
+  .dark .glass-panel,
+  .dark .surface-inset,
+  .dark .control-surface,
+  .dark .status-chip {
+    border-color: rgb(185 210 242 / 0.55);
+    background: rgb(16 31 50 / 0.9);
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .glass,
+  .glass-header,
+  .glass-sidebar,
+  .glass-panel,
+  .surface-inset,
+  .control-surface,
+  .status-chip {
+    backdrop-filter: none;
+    border-color: rgb(255 255 255 / 0.8);
+    background: rgb(242 248 255 / 0.95);
+    box-shadow: none;
+  }
+
+  .dark .glass,
+  .dark .glass-header,
+  .dark .glass-sidebar,
+  .dark .glass-panel,
+  .dark .surface-inset,
+  .dark .control-surface,
+  .dark .status-chip {
+    border-color: rgb(185 210 242 / 0.52);
+    background: rgb(16 31 50 / 0.94);
+  }
 }
 
 .status-chip {

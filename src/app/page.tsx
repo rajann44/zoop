@@ -1,6 +1,6 @@
-import Link from "next/link";
 import { QuickBodySetup } from "@/components/home/quick-body-setup";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { TransitionLink } from "@/components/ui/transition-link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -9,10 +9,10 @@ export default function Home() {
     <div className="liquid-canvas min-h-screen">
       <header className="px-3 pt-3 sm:px-4 sm:pt-4">
         <div className="glass-header mx-auto flex max-w-6xl items-center justify-between rounded-[22px] px-4 py-3 sm:px-5">
-          <Link href="/planner" className="rounded-lg px-1 py-0.5 transition-opacity hover:opacity-85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+          <TransitionLink href="/planner" className="rounded-lg px-1 py-0.5 transition-opacity hover:opacity-85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
             <h1 className="font-serif text-xl">zoop</h1>
             <p className="text-sm text-muted-foreground">Weekly Indian plan + grocery list for one person</p>
-          </Link>
+          </TransitionLink>
           <ThemeToggle />
         </div>
       </header>
@@ -34,11 +34,11 @@ export default function Home() {
 
                 <div className="flex flex-col items-start gap-2 lg:items-end lg:pt-24">
                   <Button asChild size="lg" className="bg-blue-600 text-white hover:bg-blue-500 focus-visible:ring-blue-300">
-                    <Link href="/planner">Preview sample week</Link>
+                    <TransitionLink href="/planner">Preview sample week</TransitionLink>
                   </Button>
-                  <Link href="/planner" className="rounded-md px-1 py-1 text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                  <TransitionLink href="/planner" className="rounded-md px-1 py-1 text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
                     Or customize directly.
-                  </Link>
+                  </TransitionLink>
                 </div>
               </div>
             </div>

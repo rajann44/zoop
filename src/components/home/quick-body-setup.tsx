@@ -1,12 +1,12 @@
 "use client";
 
-import Link from "next/link";
 import { useMemo, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { SegmentedControl } from "@/components/ui/segmented-control";
+import { TransitionLink } from "@/components/ui/transition-link";
 import type { UserProfile } from "@/types/planner";
 import { ACTIVITY_LEVELS, SEX_TYPES } from "@/types/planner";
 import { saveHomeBodyProfile, type HomeBodyProfile } from "@/lib/home-profile";
@@ -109,10 +109,10 @@ export function QuickBodySetup() {
           onClick={() => saveHomeBodyProfile(profile)}
           className="hover:shadow-[0_0_0_1px_rgb(10_122_255_/_0.28),0_12px_28px_rgb(10_122_255_/_0.42)] dark:hover:shadow-[0_0_0_1px_rgb(92_168_255_/_0.38),0_12px_28px_rgb(92_168_255_/_0.36)]"
         >
-          <Link href="/planner">
+          <TransitionLink href="/planner">
             Continue to planner
             <ArrowRight className="ml-2 h-4 w-4" />
-          </Link>
+          </TransitionLink>
         </Button>
       </div>
     </div>
