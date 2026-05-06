@@ -6,7 +6,6 @@ import { NutritionSummary } from "@/components/planner/nutrition-summary";
 import { PantryManager } from "@/components/planner/pantry-manager";
 import { ProfileForm } from "@/components/planner/profile-form";
 import { WeeklyPlanSection } from "@/components/planner/weekly-plan";
-import { RenderingModeToggle } from "@/components/rendering-mode-toggle";
 
 export function PlannerShell() {
   return (
@@ -17,20 +16,21 @@ export function PlannerShell() {
             <h1 className="font-serif text-xl">zoop</h1>
             <p className="text-sm text-muted-foreground">Weekly Indian plan + grocery list for one person</p>
           </Link>
-          <RenderingModeToggle />
         </div>
       </header>
 
       <main className="px-3 pt-3 sm:px-4 sm:pt-4">
         <div className="mx-auto grid max-w-6xl gap-3 sm:gap-4 lg:grid-cols-[290px_minmax(0,1fr)] lg:items-start">
-          <section className="space-y-3 sm:space-y-4 lg:sticky lg:top-24 lg:h-fit">
-            <ProfileForm />
-            <PantryManager />
+          <section className="lg:sticky lg:top-24 lg:h-[calc(100dvh-7rem)] lg:min-h-0">
+            <div className="h-full min-h-0">
+              <ProfileForm />
+            </div>
           </section>
 
           <section className="space-y-3 sm:space-y-4">
             <NutritionSummary />
             <WeeklyPlanSection />
+            <PantryManager />
             <GroceryList />
           </section>
         </div>

@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { RenderingModeToggle } from "@/components/rendering-mode-toggle";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -12,7 +11,6 @@ export default function Home() {
           <Link href="/planner" className="rounded-lg px-1 py-0.5 font-serif text-xl transition-opacity hover:opacity-85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
             zoop
           </Link>
-          <RenderingModeToggle />
         </div>
 
         <section className="grid gap-4 sm:gap-6 md:grid-cols-[1fr_340px] md:items-start">
