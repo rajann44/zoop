@@ -2,12 +2,13 @@
 
 import { useMemo, useState } from "react";
 import Image from "next/image";
-import { ChevronDown, Eye } from "lucide-react";
+import { ChevronDown, Eye, FileDown } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { MealDetailDialog } from "@/components/planner/meal-detail-dialog";
+import { exportWeeklyPlanPdf } from "@/lib/export-weekly-plan-pdf";
 import type { Meal } from "@/types/planner";
 import { usePlannerStore } from "@/store/planner-store";
 import { toTitleCase } from "@/lib/utils";
@@ -17,6 +18,8 @@ const slots = ["breakfast", "lunch", "dinner", "snack"] as const;
 export function WeeklyPlanSection() {
   const plan = usePlannerStore((state) => state.weeklyPlan);
   const isGenerating = usePlannerStore((state) => state.isGenerating);
+  const nutritionTargets = usePlannerStore((state) => state.nutritionTargets);
+  const groceryByCategory = usePlannerStore((state) => state.groceryByCategory);
   const [selectedMeal, setSelectedMeal] = useState<Meal | null>(null);
   const [open, setOpen] = useState(false);
   const [showFullWeek, setShowFullWeek] = useState(false);
@@ -58,6 +61,19 @@ export function WeeklyPlanSection() {
   return (
     <>
       <div className="space-y-4">
+        <div className="flex items-center justify-between gap-2">
+          <p className="text-sm font-medium text-muted-foreground">Weekly meals</p>
+          <Button
+            variant="secondary"
+            size="sm"
+            className="h-9 rounded-xl"
+            onClick={() => exportWeeklyPlanPdf({ plan, targets: nutritionTargets, groceryByCategory })}
+          >
+            <FileDown className="mr-1.5 h-4 w-4" />
+            Export PDF
+          </Button>
+        </div>
+
         {visibleDays.map((day) => (
           <Card key={day.day}>
             <CardHeader>
