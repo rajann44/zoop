@@ -157,8 +157,7 @@ export function InsightsWidgets() {
               </span>
             </div>
             <p className="mt-1.5 text-xs text-muted-foreground">{metrics.readinessCopy}</p>
-            <p className="mt-1 text-[11px] text-muted-foreground">{t.planner.insights.readinessExplain}</p>
-            <div className="h-2 overflow-hidden rounded-full bg-[color:var(--accent-primary-muted)]">
+            <div className="mt-2 h-2 overflow-hidden rounded-full bg-[color:var(--accent-primary-muted)]">
               <div
                 className="h-full rounded-full bg-[color:var(--accent-progress)]"
                 style={{
@@ -166,6 +165,7 @@ export function InsightsWidgets() {
                 }}
               />
             </div>
+            <p className="mt-1 text-[10px] text-muted-foreground">{t.planner.insights.readinessScaleHard} • {t.planner.insights.readinessScaleEasy}</p>
           </div>
 
           <div className="surface-inset rounded-xl p-3">

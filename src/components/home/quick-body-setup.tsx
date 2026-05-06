@@ -29,6 +29,11 @@ const numberFields = [
 
 export function QuickBodySetup() {
   const [profile, setProfile] = useState<HomeBodyProfile>(defaults);
+  const [numberInputs, setNumberInputs] = useState<Record<(typeof numberFields)[number]["key"], string>>({
+    age: String(defaults.age),
+    heightCm: String(defaults.heightCm),
+    weightKg: String(defaults.weightKg),
+  });
 
   const hint = useMemo(() => {
     return t.home.quickSetup.activityHints[profile.activityLevel];
@@ -36,6 +41,31 @@ export function QuickBodySetup() {
 
   const update = <K extends keyof HomeBodyProfile>(key: K, value: HomeBodyProfile[K]) => {
     setProfile((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const updateNumberInput = (key: (typeof numberFields)[number]["key"], raw: string) => {
+    const digitsOnly = raw.replace(/\D+/g, "").replace(/^0+(?=\d)/, "");
+    setNumberInputs((prev) => ({ ...prev, [key]: digitsOnly }));
+    if (!digitsOnly) return;
+    update(key, Number(digitsOnly) as HomeBodyProfile[typeof key]);
+  };
+
+  const onNumberBlur = (key: (typeof numberFields)[number]["key"], min: number, max: number) => {
+    const current = numberInputs[key];
+    if (!current) {
+      setNumberInputs((prev) => ({ ...prev, [key]: String(profile[key]) }));
+      return;
+    }
+    const clamped = Math.min(max, Math.max(min, Math.round(Number(current))));
+    update(key, clamped as HomeBodyProfile[typeof key]);
+    setNumberInputs((prev) => ({ ...prev, [key]: String(clamped) }));
+  };
+
+  const profileForSave = {
+    ...profile,
+    age: numberInputs.age ? Number(numberInputs.age) : profile.age,
+    heightCm: numberInputs.heightCm ? Number(numberInputs.heightCm) : profile.heightCm,
+    weightKg: numberInputs.weightKg ? Number(numberInputs.weightKg) : profile.weightKg,
   };
 
   return (
@@ -75,8 +105,9 @@ export function QuickBodySetup() {
 
         <div className="grid gap-2 sm:grid-cols-3">
           {numberFields.map((field) => {
-            const value = profile[field.key];
-            const outside = value < field.min || value > field.max;
+            const textValue = numberInputs[field.key];
+            const parsed = textValue ? Number(textValue) : null;
+            const outside = parsed !== null && (parsed < field.min || parsed > field.max);
             return (
               <div key={field.key} className="space-y-1.5">
                 <Label htmlFor={`home-${field.key}`} className="text-sm">
@@ -84,11 +115,13 @@ export function QuickBodySetup() {
                 </Label>
                 <Input
                   id={`home-${field.key}`}
-                  type="number"
+                  type="text"
+                  inputMode="numeric"
                   min={field.min}
                   max={field.max}
-                  value={value}
-                  onChange={(event) => update(field.key, Number(event.target.value) as HomeBodyProfile[typeof field.key])}
+                  value={textValue}
+                  onChange={(event) => updateNumberInput(field.key, event.target.value)}
+                  onBlur={() => onNumberBlur(field.key, field.min, field.max)}
                 />
                 <p className={`text-xs ${outside ? "text-amber-600" : "text-muted-foreground"}`}>
                   {field.min}-{field.max}{"unit" in field ? ` ${field.unit}` : ""}
@@ -103,7 +136,7 @@ export function QuickBodySetup() {
         <p className="text-xs text-muted-foreground">{t.home.quickSetup.optionalNote}</p>
         <Button
           asChild
-          onClick={() => saveHomeBodyProfile(profile)}
+          onClick={() => saveHomeBodyProfile(profileForSave)}
           className="hover:shadow-[0_0_0_1px_rgb(10_122_255_/_0.28),0_12px_28px_rgb(10_122_255_/_0.42)] dark:hover:shadow-[0_0_0_1px_rgb(92_168_255_/_0.38),0_12px_28px_rgb(92_168_255_/_0.36)]"
         >
           <TransitionLink href="/planner">
