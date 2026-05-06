@@ -72,12 +72,12 @@ export function WeeklyPlanSection() {
     <>
       <Card>
         <CardHeader className="space-y-3 pb-3">
-          <div className="flex items-center justify-between gap-2">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <CardTitle className="text-base">{t.planner.weeklyPlan.sectionTitle}</CardTitle>
             <Button
               variant="secondary"
               size="sm"
-              className="h-9 rounded-xl"
+              className="h-9 w-full rounded-xl sm:w-auto"
               onClick={() => exportWeeklyPlanPdf({ plan, targets: nutritionTargets, groceryByCategory })}
             >
               <FileDown className="mr-1.5 h-4 w-4" />

@@ -12,17 +12,17 @@ export function BodyMetricsSummary() {
   return (
     <Card>
       <CardHeader>
-        <div className="flex items-center justify-between gap-2">
+        <div className="flex flex-col gap-1.5 sm:flex-row sm:items-center sm:justify-between sm:gap-2">
           <div>
             <CardTitle>{t.planner.bodyMetrics.title}</CardTitle>
             <CardDescription>{t.planner.bodyMetrics.description}</CardDescription>
           </div>
-          <TransitionLink href="/" className="rounded-md px-2 py-1 text-sm font-medium text-accent transition-opacity hover:opacity-85">
+          <TransitionLink href="/" className="w-fit rounded-md px-2 py-1 text-sm font-medium text-accent transition-opacity hover:opacity-85">
             {t.planner.bodyMetrics.editCta}
           </TransitionLink>
         </div>
       </CardHeader>
-      <CardContent className="grid gap-2 sm:grid-cols-2 lg:grid-cols-5">
+      <CardContent className="grid gap-2 grid-cols-2 lg:grid-cols-5">
         <Metric label={t.planner.profileForm.fields.sex} value={toTitleCase(profile.sex)} />
         <Metric label={t.planner.profileForm.fields.activity} value={toTitleCase(profile.activityLevel)} />
         <Metric label={t.planner.profileForm.fields.age} value={`${profile.age}`} />

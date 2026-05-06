@@ -42,7 +42,7 @@ export function PlannerShell() {
         <div className="glass-header mx-auto flex max-w-6xl items-center justify-between rounded-[22px] px-4 py-3 sm:px-5">
           <TransitionLink href="/" className="rounded-lg px-1 py-0.5 transition-opacity hover:opacity-85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
             <h1 className="font-serif text-xl">{t.common.appName}</h1>
-            <p className="text-sm text-muted-foreground">{t.common.appTagline}</p>
+            <p className="hidden text-sm text-muted-foreground sm:block">{t.common.appTagline}</p>
           </TransitionLink>
           <ThemeToggle />
         </div>
@@ -56,7 +56,7 @@ export function PlannerShell() {
             </div>
           </section>
 
-          <section className="space-y-3 sm:space-y-4">
+          <section className="min-w-0 space-y-3 sm:space-y-4">
             <BodyMetricsSummary />
             <NutritionSummary />
             <InsightsWidgets />

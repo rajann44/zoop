@@ -60,7 +60,7 @@ export function GroceryList() {
   return (
     <Card>
       <CardHeader>
-        <div className="flex items-start justify-between gap-3">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between sm:gap-3">
           <div>
             <CardTitle>{t.planner.grocery.title}</CardTitle>
             <CardDescription>{t.planner.grocery.description}</CardDescription>
@@ -68,7 +68,7 @@ export function GroceryList() {
           <Button
             variant="secondary"
             size="sm"
-            className="h-9 rounded-xl shrink-0"
+            className="h-9 w-full rounded-xl sm:w-auto sm:shrink-0"
             onClick={() =>
               exportGroceryListPdf({
                 state: plan.profile.state,
@@ -149,7 +149,7 @@ export function GroceryList() {
 
         <div className="surface-inset flex items-center justify-between rounded-xl px-3 py-2 text-sm">
           <span className="text-muted-foreground">{breakdown.summary.total} {t.planner.grocery.totalIngredientsSuffix}</span>
-          <span className="font-medium text-foreground">{breakdown.summary.toBuy} {t.planner.grocery.toBuy} • {breakdown.summary.covered} {t.planner.grocery.covered}</span>
+          <span className="text-right font-medium text-foreground">{breakdown.summary.toBuy} {t.planner.grocery.toBuy} • {breakdown.summary.covered} {t.planner.grocery.covered}</span>
         </div>
 
         {INGREDIENT_CATEGORIES.map((category) => {
