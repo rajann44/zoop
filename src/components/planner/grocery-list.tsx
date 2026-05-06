@@ -67,9 +67,9 @@ export function GroceryList() {
                   return (
                     <div key={category} className="space-y-1.5">
                       <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{category}</p>
-                      <ul className="space-y-1.5 text-sm">
-                        {coveredItems.map((item) => (
-                          <li key={item.key} className="glass-soft flex items-center justify-between rounded-lg px-3 py-2 opacity-80">
+                       <ul className="space-y-1.5 text-sm">
+                         {coveredItems.map((item) => (
+                          <li key={item.key} className="glass-soft flex items-center justify-between rounded-lg px-3 py-2 opacity-90">
                             <span>{item.name}</span>
                             <span className="text-muted-foreground">
                               {Math.round(item.quantity * 10) / 10} {item.unit}

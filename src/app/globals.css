@@ -1,15 +1,28 @@
 @import "tailwindcss";
 
 :root {
-  --background: #d9ebff;
-  --foreground: #132235;
-  --card: #ffffff8c;
-  --muted: #e7f3ff99;
-  --muted-foreground: #50647c;
-  --border: #ffffffa6;
-  --accent: #1f71d8;
+  --bg-app: #deebfb;
+  --surface-glass-header: rgb(255 255 255 / 0.52);
+  --surface-glass-sidebar: rgb(255 255 255 / 0.46);
+  --surface-glass-panel: rgb(255 255 255 / 0.41);
+  --surface-glass-card: rgb(255 255 255 / 0.28);
+  --surface-control: rgb(255 255 255 / 0.34);
+  --border-glass: rgb(255 255 255 / 0.62);
+  --accent-primary: #0a7aff;
+  --accent-primary-muted: rgb(10 122 255 / 0.16);
+  --accent-progress: #0a7aff;
+  --text-primary: #12243a;
+  --text-secondary: #556b84;
+
+  --background: var(--bg-app);
+  --foreground: var(--text-primary);
+  --card: var(--surface-glass-panel);
+  --muted: var(--surface-control);
+  --muted-foreground: var(--text-secondary);
+  --border: var(--border-glass);
+  --accent: var(--accent-primary);
   --accent-foreground: #f6fbff;
-  --ring: #1f71d8;
+  --ring: var(--accent-primary);
   --radius: 18px;
   color-scheme: light;
 }
@@ -29,22 +42,35 @@
 }
 
 .dark {
-  --background: #07111f;
-  --foreground: #e8f0ff;
-  --card: #14243bb3;
-  --muted: #1a2f4e99;
-  --muted-foreground: #9db2cf;
-  --border: #ffffff30;
-  --accent: #7cc1ff;
-  --accent-foreground: #0d2038;
-  --ring: #7cc1ff;
+  --bg-app: #0a1524;
+  --surface-glass-header: rgb(22 38 60 / 0.6);
+  --surface-glass-sidebar: rgb(20 34 56 / 0.56);
+  --surface-glass-panel: rgb(18 31 52 / 0.52);
+  --surface-glass-card: rgb(16 29 48 / 0.46);
+  --surface-control: rgb(24 42 70 / 0.56);
+  --border-glass: rgb(180 205 240 / 0.22);
+  --accent-primary: #5ca8ff;
+  --accent-primary-muted: rgb(92 168 255 / 0.22);
+  --accent-progress: #5ca8ff;
+  --text-primary: #e7f0ff;
+  --text-secondary: #a1b7d3;
+
+  --background: var(--bg-app);
+  --foreground: var(--text-primary);
+  --card: var(--surface-glass-panel);
+  --muted: var(--surface-control);
+  --muted-foreground: var(--text-secondary);
+  --border: var(--border-glass);
+  --accent: var(--accent-primary);
+  --accent-foreground: #0f2645;
+  --ring: var(--accent-primary);
   color-scheme: dark;
 }
 
 body {
-  background: radial-gradient(1200px 640px at 4% 0%, #b7d8ff 0%, transparent 52%),
-    radial-gradient(1100px 650px at 100% 0%, #82c6ff 0%, transparent 50%),
-    radial-gradient(900px 540px at 50% 100%, #6fa8ff 0%, transparent 56%), var(--background);
+  background: radial-gradient(1200px 640px at 5% -8%, rgb(179 213 255 / 0.78) 0%, transparent 56%),
+    radial-gradient(1020px 620px at 98% 0%, rgb(147 198 255 / 0.64) 0%, transparent 52%),
+    radial-gradient(920px 560px at 50% 100%, rgb(116 174 255 / 0.54) 0%, transparent 58%), var(--background);
   background-repeat: no-repeat;
   background-attachment: fixed;
   color: var(--foreground);
@@ -59,9 +85,9 @@ body {
 }
 
 .dark body {
-  background: radial-gradient(1000px 600px at 10% 0%, #17345b 0%, transparent 56%),
-    radial-gradient(900px 520px at 100% 10%, #11406c 0%, transparent 56%),
-    radial-gradient(1000px 560px at 50% 100%, #0f2a4a 0%, transparent 58%), var(--background);
+  background: radial-gradient(980px 560px at 8% -6%, rgb(44 86 134 / 0.56) 0%, transparent 58%),
+    radial-gradient(900px 520px at 100% 10%, rgb(24 75 126 / 0.52) 0%, transparent 56%),
+    radial-gradient(960px 560px at 50% 100%, rgb(20 59 100 / 0.5) 0%, transparent 60%), var(--background);
   background-repeat: no-repeat;
   background-attachment: fixed;
 }
@@ -90,7 +116,7 @@ body {
   min-height: 260px;
   left: -9vw;
   top: 18vh;
-  background: radial-gradient(circle at 30% 30%, #ffffffc4 0%, #99d7ff94 48%, transparent 70%);
+  background: radial-gradient(circle at 30% 30%, rgb(255 255 255 / 0.68) 0%, rgb(152 203 255 / 0.42) 48%, transparent 72%);
 }
 
 .liquid-canvas::after {
@@ -100,50 +126,73 @@ body {
   min-height: 240px;
   right: -8vw;
   top: 8vh;
-  background: radial-gradient(circle at 40% 35%, #8ec6ffb3 0%, #5f9eff82 46%, transparent 70%);
+  background: radial-gradient(circle at 40% 35%, rgb(143 196 255 / 0.62) 0%, rgb(92 155 242 / 0.38) 44%, transparent 72%);
 }
 
 .dark .liquid-canvas::before {
-  background: radial-gradient(circle at 30% 30%, #4a79b59e 0%, #2f5f9890 46%, transparent 72%);
+  background: radial-gradient(circle at 30% 30%, rgb(87 126 175 / 0.52) 0%, rgb(42 85 133 / 0.46) 46%, transparent 72%);
 }
 
 .dark .liquid-canvas::after {
-  background: radial-gradient(circle at 40% 35%, #2b5f98b5 0%, #1d3f6c8a 44%, transparent 70%);
+  background: radial-gradient(circle at 40% 35%, rgb(57 101 153 / 0.6) 0%, rgb(29 62 104 / 0.46) 44%, transparent 70%);
 }
 
 .glass {
-  border: 1px solid var(--border);
-  background: linear-gradient(180deg, rgb(255 255 255 / 0.44) 0%, rgb(255 255 255 / 0.2) 100%);
-  backdrop-filter: blur(24px) saturate(165%);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.75), 0 12px 36px rgb(12 46 95 / 0.16);
+  border: 1px solid var(--border-glass);
+  background: linear-gradient(180deg, var(--surface-glass-panel) 0%, rgb(255 255 255 / 0.2) 100%);
+  backdrop-filter: blur(20px) saturate(138%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.58), 0 10px 26px rgb(17 55 101 / 0.12);
 }
 
 .glass-soft {
-  border: 1px solid var(--border);
-  background: linear-gradient(180deg, rgb(255 255 255 / 0.3) 0%, rgb(255 255 255 / 0.14) 100%);
-  backdrop-filter: blur(14px) saturate(140%);
+  border: 1px solid var(--border-glass);
+  background: linear-gradient(180deg, var(--surface-control) 0%, rgb(255 255 255 / 0.16) 100%);
+  backdrop-filter: blur(12px) saturate(126%);
 }
 
-.rendering-accented {
-  --accent: #eef4ff;
-  --accent-foreground: #304862;
-  --ring: #eef4ff;
+.glass-header {
+  border: 1px solid var(--border-glass);
+  background: linear-gradient(180deg, var(--surface-glass-header) 0%, rgb(255 255 255 / 0.24) 100%);
+  backdrop-filter: blur(24px) saturate(145%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.64), 0 10px 24px rgb(17 55 101 / 0.11);
 }
 
-.rendering-accented .glass {
-  background: linear-gradient(180deg, rgb(255 255 255 / 0.32) 0%, rgb(255 255 255 / 0.14) 100%);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.85), 0 10px 30px rgb(16 52 96 / 0.12);
+.glass-sidebar {
+  border: 1px solid var(--border-glass);
+  background: linear-gradient(180deg, var(--surface-glass-sidebar) 0%, rgb(255 255 255 / 0.2) 100%);
+  backdrop-filter: blur(20px) saturate(136%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.62), 0 8px 24px rgb(17 55 101 / 0.1);
 }
 
-.rendering-accented .glass-soft,
-.rendering-accented .surface-inset {
-  background: linear-gradient(180deg, rgb(255 255 255 / 0.22) 0%, rgb(255 255 255 / 0.1) 100%);
+.glass-panel {
+  border: 1px solid var(--border-glass);
+  background: linear-gradient(180deg, var(--surface-glass-panel) 0%, rgb(255 255 255 / 0.18) 100%);
+  backdrop-filter: blur(18px) saturate(132%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.58), 0 8px 22px rgb(17 55 101 / 0.1);
 }
 
 .surface-inset {
-  border: 1px solid var(--border);
-  background: linear-gradient(180deg, rgb(255 255 255 / 0.24) 0%, rgb(255 255 255 / 0.1) 100%);
-  backdrop-filter: blur(10px) saturate(130%);
+  border: 1px solid var(--border-glass);
+  background: linear-gradient(180deg, var(--surface-glass-card) 0%, rgb(255 255 255 / 0.14) 100%);
+  backdrop-filter: blur(10px) saturate(124%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.52);
+}
+
+.control-surface {
+  border: 1px solid var(--border-glass);
+  background: linear-gradient(180deg, var(--surface-control) 0%, rgb(255 255 255 / 0.18) 100%);
+  backdrop-filter: blur(10px) saturate(122%);
+}
+
+.status-chip {
+  border: 1px solid var(--border-glass);
+  background: rgb(255 255 255 / 0.3);
+  color: var(--text-secondary);
+}
+
+.status-chip-strong {
+  background: var(--accent-primary-muted);
+  color: var(--accent-primary);
 }
 
 @media (hover: hover) {

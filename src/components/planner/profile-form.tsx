@@ -42,7 +42,7 @@ export function ProfileForm() {
   };
 
   return (
-    <Card className="flex h-full min-h-0 flex-col overflow-hidden">
+    <Card className="glass-sidebar flex h-full min-h-0 flex-col overflow-hidden">
       <CardHeader className="shrink-0 space-y-1.5 pb-3">
         <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">Plan setup</p>
         <CardTitle>Create your weekly plan</CardTitle>
@@ -167,7 +167,7 @@ export function ProfileForm() {
             </button>
 
             {showAdvanced ? (
-              <div id="advanced-settings" className="space-y-2.5 rounded-xl border border-border/70 bg-white/18 p-3">
+              <div id="advanced-settings" className="surface-inset space-y-2.5 rounded-xl p-3">
                 <Field label="Sex" id="sex">
                   <SegmentedControl id="sex" value={profile.sex} options={SEX_TYPES} onChange={(value) => update("sex", value as UserProfile["sex"])} getLabel={toTitleCase} />
                 </Field>
@@ -207,7 +207,7 @@ export function ProfileForm() {
           </section>
         </div>
 
-        <div className="shrink-0 border-t border-white/35 bg-gradient-to-b from-white/56 to-white/40 px-4 py-3 backdrop-blur-xl shadow-[inset_0_1px_0_rgb(255_255_255_/_0.52)] supports-[backdrop-filter]:bg-white/38 sm:px-5">
+        <div className="shrink-0 border-t border-[color:var(--border-glass)] bg-[color:var(--surface-glass-header)]/70 px-4 py-3 backdrop-blur-xl shadow-[inset_0_1px_0_rgb(255_255_255_/_0.52)] sm:px-5">
           <Button className="h-10 w-full" onClick={regenerate} disabled={isGenerating}>
             {isGenerating ? "Generating plan..." : "Generate weekly plan"}
           </Button>

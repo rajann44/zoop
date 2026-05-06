@@ -12,10 +12,10 @@ function Select({ ...props }: React.ComponentProps<typeof SelectPrimitive.Root>)
 function SelectTrigger({ className, children, ...props }: React.ComponentProps<typeof SelectPrimitive.Trigger>) {
   return (
     <SelectPrimitive.Trigger
-      className={cn(
-        "glass-soft flex h-10 w-full items-center justify-between rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50",
-        className,
-      )}
+        className={cn(
+          "control-surface flex h-10 w-full items-center justify-between rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50",
+          className,
+        )}
       {...props}
     >
       {children}
@@ -35,7 +35,7 @@ function SelectContent({ className, children, position = "popper", ...props }: R
     <SelectPrimitive.Portal>
       <SelectPrimitive.Content
         className={cn(
-          "relative z-50 min-w-[10rem] overflow-hidden rounded-xl border border-border bg-card/95 text-foreground shadow-2xl backdrop-blur-xl",
+          "relative z-50 min-w-[10rem] overflow-hidden rounded-xl border border-[color:var(--border-glass)] bg-[color:var(--surface-glass-panel)] text-foreground shadow-[0_12px_32px_rgb(8_37_74_/_0.25)] backdrop-blur-xl",
           position === "popper" && "translate-y-1",
           className,
         )}
@@ -51,10 +51,10 @@ function SelectContent({ className, children, position = "popper", ...props }: R
 function SelectItem({ className, children, ...props }: React.ComponentProps<typeof SelectPrimitive.Item>) {
   return (
     <SelectPrimitive.Item
-      className={cn(
-        "relative flex w-full cursor-default select-none items-center rounded-lg py-1.5 pr-8 pl-2 text-sm outline-none focus:bg-muted",
-        className,
-      )}
+        className={cn(
+          "relative flex w-full cursor-default select-none items-center rounded-lg py-1.5 pr-8 pl-2 text-sm outline-none focus:bg-[color:var(--accent-primary-muted)]",
+          className,
+        )}
       {...props}
     >
       <span className="absolute right-2 flex h-3.5 w-3.5 items-center justify-center">

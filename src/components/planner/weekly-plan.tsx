@@ -19,10 +19,10 @@ import img4 from "../../../images/img4.jpg";
 const slots = ["breakfast", "lunch", "dinner", "snack"] as const;
 
 const slotMedia: Record<(typeof slots)[number], { src: StaticImageData; tint: string }> = {
-  breakfast: { src: img1, tint: "from-amber-100/45 via-orange-100/15 to-transparent" },
-  lunch: { src: img2, tint: "from-sky-100/40 via-cyan-100/14 to-transparent" },
-  dinner: { src: img3, tint: "from-indigo-100/45 via-violet-100/15 to-transparent" },
-  snack: { src: img4, tint: "from-lime-100/40 via-emerald-100/14 to-transparent" },
+  breakfast: { src: img1, tint: "from-[color:var(--accent-primary-muted)] via-white/8 to-transparent" },
+  lunch: { src: img2, tint: "from-[color:var(--accent-primary-muted)] via-white/10 to-transparent" },
+  dinner: { src: img3, tint: "from-[color:var(--accent-primary-muted)] via-white/8 to-transparent" },
+  snack: { src: img4, tint: "from-[color:var(--accent-primary-muted)] via-white/10 to-transparent" },
 };
 
 export function WeeklyPlanSection() {
@@ -80,17 +80,16 @@ export function WeeklyPlanSection() {
                 const meal = day[slot];
                 const media = slotMedia[slot];
                 return (
-                  <div key={`${day.day}-${slot}`} className="relative flex h-full flex-col overflow-hidden rounded-2xl border border-white/55 bg-gradient-to-b from-white/45 to-white/18 p-3 shadow-[inset_0_1px_0_rgb(255_255_255_/_0.85),0_10px_24px_rgb(16_44_88_/_0.1)] backdrop-blur-xl">
-                    <div className="relative mb-3 overflow-hidden rounded-xl border border-white/55 bg-white/25">
+                  <div key={`${day.day}-${slot}`} className="surface-inset relative flex h-full flex-col overflow-hidden rounded-2xl p-3">
+                    <div className="relative mb-3 overflow-hidden rounded-xl border border-[color:var(--border-glass)] bg-[color:var(--surface-control)]">
                       <Image src={media.src} alt={`${toTitleCase(slot)} preview`} className="h-28 w-full object-cover" sizes="(min-width: 1024px) 22vw, (min-width: 640px) 42vw, 95vw" />
                       <div className={`pointer-events-none absolute inset-0 bg-gradient-to-br ${media.tint}`} />
                     </div>
-                    <div className="pointer-events-none absolute inset-x-3 top-[7.55rem] h-9 rounded-full bg-gradient-to-r from-white/45 via-white/15 to-transparent" />
                     <div className="relative mb-2 flex items-center justify-between">
-                      <Badge variant="outline" className="rounded-full border-white/65 bg-white/35 px-2.5 py-1">
+                      <Badge variant="outline" className="rounded-full px-2.5 py-1">
                         {toTitleCase(slot)}
                       </Badge>
-                      <span className="rounded-full border border-white/60 bg-white/30 px-2 py-0.5 text-xs text-muted-foreground">{meal.prepTimeMin}m</span>
+                      <span className="status-chip rounded-full px-2 py-0.5 text-xs">{meal.prepTimeMin}m</span>
                     </div>
                     <div className="relative flex grow flex-col">
                       <p className="text-[1.03rem] font-semibold leading-snug text-foreground">{meal.name}</p>
@@ -101,7 +100,7 @@ export function WeeklyPlanSection() {
                     <Button
                       variant="secondary"
                       size="sm"
-                      className="mt-3 h-9 w-full whitespace-nowrap rounded-xl border border-white/55 bg-white/35"
+                      className="mt-3 h-9 w-full whitespace-nowrap rounded-xl"
                       onClick={() => {
                         setSelectedMeal(meal);
                         setOpen(true);
@@ -117,7 +116,7 @@ export function WeeklyPlanSection() {
           </Card>
         ))}
 
-        <Button variant="ghost" className="h-9 w-full justify-between border border-dashed border-border" onClick={() => setShowFullWeek((current) => !current)}>
+        <Button variant="secondary" className="h-9 w-full justify-between" onClick={() => setShowFullWeek((current) => !current)}>
           {showFullWeek ? "Show only today" : "View full week"}
           <ChevronDown className={`h-4 w-4 transition-transform ${showFullWeek ? "rotate-180" : ""}`} />
         </Button>
