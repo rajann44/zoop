@@ -195,6 +195,15 @@ body {
   color: var(--accent-primary);
 }
 
+.sidebar-scroll {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.sidebar-scroll::-webkit-scrollbar {
+  display: none;
+}
+
 @media (hover: hover) {
   .elevate-hover {
     transition: transform 220ms ease, box-shadow 220ms ease;
