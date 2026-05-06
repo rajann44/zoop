@@ -25,17 +25,21 @@ export function WeeklyPlanSection() {
   const [open, setOpen] = useState(false);
   const dayTrackRef = useRef<HTMLDivElement | null>(null);
   const slideRefs = useRef<Array<HTMLDivElement | null>>([]);
+  const hasSyncedDayRef = useRef(false);
 
   const empty = useMemo(() => !plan.days.length, [plan.days.length]);
   const todayIndex = useMemo(() => (new Date().getDay() + 6) % 7, []);
   const [activeDayIndex, setActiveDayIndex] = useState(todayIndex);
 
   useEffect(() => {
+    const track = dayTrackRef.current;
     const maxIndex = Math.max(plan.days.length - 1, 0);
     const clampedIndex = Math.min(activeDayIndex, maxIndex);
     const slide = slideRefs.current[clampedIndex];
-    if (!slide) return;
-    slide.scrollIntoView({ behavior: "smooth", inline: "start", block: "nearest" });
+    if (!track || !slide) return;
+    const left = slide.offsetLeft - track.offsetLeft;
+    track.scrollTo({ left, behavior: hasSyncedDayRef.current ? "smooth" : "auto" });
+    hasSyncedDayRef.current = true;
   }, [activeDayIndex, plan.days.length]);
 
   if (isGenerating) {

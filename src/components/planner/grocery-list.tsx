@@ -2,17 +2,15 @@
 
 import { useMemo, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ChevronDown, FileDown, Search, X } from "lucide-react";
-import { PANTRY_STAPLES } from "@/data/pantry";
+import { FileDown } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { exportGroceryListPdf } from "@/lib/export-grocery-list-pdf";
 import { cn } from "@/lib/utils";
 import { usePlannerStore } from "@/store/planner-store";
-import { INGREDIENT_CATEGORIES } from "@/types/planner";
+import { INGREDIENT_CATEGORIES, type IngredientCategory } from "@/types/planner";
 import { buildGroceryBreakdown } from "@/lib/grocery";
 import { t } from "@/locales";
 
@@ -21,10 +19,8 @@ const CORE_STAPLES = ["Rice", "Wheat atta", "Cooking oil", "Salt", "Turmeric pow
 export function GroceryList() {
   const plan = usePlannerStore((state) => state.weeklyPlan);
   const pantrySelected = usePlannerStore((state) => state.pantrySelected);
-  const setPantryItem = usePlannerStore((state) => state.setPantryItem);
   const setPantrySelected = usePlannerStore((state) => state.setPantrySelected);
-  const [showPantryChecklist, setShowPantryChecklist] = useState(false);
-  const [search, setSearch] = useState("");
+  const [activeCategory, setActiveCategory] = useState<IngredientCategory>("Vegetables");
 
   const simpleEnabled = CORE_STAPLES.every((item) => pantrySelected.includes(item));
   const effectivePantrySelected = useMemo(
@@ -36,18 +32,12 @@ export function GroceryList() {
   const allIngredients = plan.days.flatMap((day) => [day.breakfast, day.lunch, day.dinner, day.snack]).flatMap((meal) => meal.ingredients);
   const breakdown = buildGroceryBreakdown(allIngredients, effectivePantrySelected, plan.profile);
 
-  const filteredPantry = useMemo(() => {
-    const query = search.trim().toLowerCase();
-    const base = PANTRY_STAPLES.filter((item) => !CORE_STAPLES.includes(item));
-    if (!query) return base;
-    return base.filter((item) => item.toLowerCase().includes(query));
-  }, [search]);
-
-  const activePantryItems = useMemo(() => {
-    const known = PANTRY_STAPLES.filter((item) => effectivePantrySelected.includes(item));
-    const custom = effectivePantrySelected.filter((item) => !PANTRY_STAPLES.includes(item as (typeof PANTRY_STAPLES)[number])).sort((a, b) => a.localeCompare(b));
-    return [...known, ...custom];
-  }, [effectivePantrySelected]);
+  const categoriesWithItems = useMemo(
+    () => INGREDIENT_CATEGORIES.filter((category) => breakdown.toBuyByCategory[category].length > 0),
+    [breakdown.toBuyByCategory],
+  );
+  const visibleCategories = categoriesWithItems.length ? categoriesWithItems : INGREDIENT_CATEGORIES;
+  const resolvedActiveCategory = visibleCategories.includes(activeCategory) ? activeCategory : visibleCategories[0];
 
   const onSimpleToggle = (enabled: boolean) => {
     if (enabled) {
@@ -83,7 +73,26 @@ export function GroceryList() {
           </Button>
         </div>
       </CardHeader>
-      <CardContent className="space-y-2.5">
+      <CardContent className="space-y-2.5 sm:space-y-3">
+        <div className="surface-inset rounded-2xl p-3">
+          <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
+            <StatPill label={t.planner.grocery.totalIngredientsSuffix} value={breakdown.summary.total} />
+            <StatPill label={t.planner.grocery.toBuy} value={breakdown.summary.toBuy} strong />
+            <StatPill label={t.planner.grocery.covered} value={breakdown.summary.covered} />
+          </div>
+          <div className="mt-2 flex flex-wrap gap-1.5">
+            {categoriesWithItems.length ? (
+              categoriesWithItems.map((category) => (
+                <span key={category} className="status-chip rounded-full px-2 py-0.5 text-[11px]">
+                  {category} ({breakdown.toBuyByCategory[category].length})
+                </span>
+              ))
+            ) : (
+              <span className="text-xs text-muted-foreground">{t.planner.grocery.emptyCategory}</span>
+            )}
+          </div>
+        </div>
+
         <div className="surface-inset rounded-xl px-3 py-2.5">
           <div className="mb-2 flex items-center justify-between gap-3">
             <Label htmlFor="simple-staples">{t.planner.pantry.simpleToggle}</Label>
@@ -103,104 +112,57 @@ export function GroceryList() {
           </div>
         </div>
 
-        <Button
-          variant="ghost"
-          className="glass-soft h-9 w-full justify-between border border-dashed border-border"
-          onClick={() => setShowPantryChecklist((current) => !current)}
-          type="button"
-        >
-          {showPantryChecklist ? t.planner.pantry.hideChecklist : t.planner.pantry.showChecklist}
-          <ChevronDown className={`h-4 w-4 transition-transform ${showPantryChecklist ? "rotate-180" : ""}`} />
-        </Button>
-
-        {showPantryChecklist ? (
-          <div className="space-y-2">
-            <div className="glass-soft flex items-center gap-2 rounded-xl px-3 py-2">
-              <Search className="h-4 w-4 text-muted-foreground" />
-              <Input
-                value={search}
-                onChange={(event) => setSearch(event.target.value)}
-                placeholder={t.planner.pantry.searchPlaceholder}
-                className="h-7 border-0 bg-transparent px-0 text-sm shadow-none focus-visible:ring-0"
-              />
-              {search ? (
-                <button type="button" aria-label={t.planner.pantry.clearSearchAria} onClick={() => setSearch("")}>
-                  <X className="h-4 w-4 text-muted-foreground" />
-                </button>
-              ) : null}
-            </div>
-
-            {filteredPantry.map((item) => {
-              const enabled = pantrySelected.includes(item);
-              const id = `pantry-${item.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
+        <div className="surface-inset rounded-xl p-2">
+          <div className="sidebar-scroll flex snap-x snap-mandatory gap-1 overflow-x-auto pb-1 touch-pan-x">
+            {visibleCategories.map((category) => {
+              const selected = category === resolvedActiveCategory;
               return (
-                <div key={item} className={cn("flex items-center justify-between rounded-xl px-3 py-2.5", enabled ? "glass-soft" : "surface-inset")}>
-                  <Label htmlFor={id} className="text-sm">
-                    {item}
-                  </Label>
-                  <Switch id={id} checked={enabled} onCheckedChange={(checked) => setPantryItem(item, checked)} />
-                </div>
+                <button
+                  key={category}
+                  type="button"
+                  aria-pressed={selected}
+                  onClick={() => setActiveCategory(category)}
+                  className={cn(
+                    "min-h-8 snap-start whitespace-nowrap rounded-lg px-2.5 py-1 text-xs transition-colors",
+                    selected ? "bg-accent text-accent-foreground" : "control-surface text-muted-foreground hover:text-foreground",
+                  )}
+                >
+                  {category} ({breakdown.toBuyByCategory[category].length})
+                </button>
               );
             })}
-
-            {!filteredPantry.length ? <p className="py-1 text-sm text-muted-foreground">{t.planner.pantry.noMatches}</p> : null}
           </div>
-        ) : null}
-
-        <div className="surface-inset flex items-center justify-between rounded-xl px-3 py-2 text-sm">
-          <span className="text-muted-foreground">{breakdown.summary.total} {t.planner.grocery.totalIngredientsSuffix}</span>
-          <span className="text-right font-medium text-foreground">{breakdown.summary.toBuy} {t.planner.grocery.toBuy} • {breakdown.summary.covered} {t.planner.grocery.covered}</span>
-        </div>
-
-        {INGREDIENT_CATEGORIES.map((category) => {
-          const items = breakdown.toBuyByCategory[category];
-          return (
-            <details key={category} className="surface-inset group rounded-xl" open={category === "Vegetables"}>
-              <summary className="flex cursor-pointer list-none items-center justify-between px-3 py-2 text-sm font-medium">
-                {category}
-                <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform group-open:rotate-180" />
-              </summary>
-              <div className="border-t border-border px-3 py-2">
-                {items.length ? (
-                  <ul className="space-y-2 text-sm">
-                    {items.map((item) => (
-                      <li key={item.key} className="glass-soft flex items-center justify-between rounded-lg px-3 py-2">
-                        <span>{item.name}</span>
-                        <span className="text-muted-foreground">
-                          {Math.round(item.quantity * 10) / 10} {item.unit}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p className="py-1 text-sm text-muted-foreground">{t.planner.grocery.emptyCategory}</p>
-                )}
-              </div>
-            </details>
-          );
-        })}
-
-        <details className="surface-inset group rounded-xl">
-          <summary className="flex cursor-pointer list-none items-center justify-between px-3 py-2 text-sm font-medium">
-            {t.planner.grocery.pantrySection}
-            <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform group-open:rotate-180" />
-          </summary>
-          <div className="border-t border-border px-3 py-2">
-            {activePantryItems.length ? (
+          <div className="mt-1 border-t border-border/70 px-1 pt-2">
+            {breakdown.toBuyByCategory[resolvedActiveCategory].length ? (
               <ul className="space-y-1.5 text-sm">
-                {activePantryItems.map((item) => (
-                  <li key={item} className="glass-soft flex items-center justify-between rounded-lg px-3 py-2 opacity-90">
-                    <span>{item}</span>
-                    <span className="text-xs text-muted-foreground">selected</span>
+                {breakdown.toBuyByCategory[resolvedActiveCategory].map((item) => (
+                  <li key={item.key} className="glass-soft flex min-h-10 items-center justify-between rounded-lg px-2.5 py-2">
+                    <span className="inline-flex min-w-0 items-center gap-2">
+                      <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[color:var(--accent-primary)]/75" />
+                      <span className="truncate">{item.name}</span>
+                    </span>
+                    <span className="shrink-0 text-right text-xs font-medium tabular-nums text-muted-foreground">
+                      {Math.round(item.quantity * 10) / 10} {item.unit}
+                    </span>
                   </li>
                 ))}
               </ul>
             ) : (
-              <p className="py-1 text-sm text-muted-foreground">{t.planner.grocery.noCovered}</p>
+              <p className="py-1 text-sm text-muted-foreground">{t.planner.grocery.emptyCategory}</p>
             )}
           </div>
-        </details>
+        </div>
+
       </CardContent>
     </Card>
+  );
+}
+
+function StatPill({ label, value, strong = false }: { label: string; value: number; strong?: boolean }) {
+  return (
+    <div className={cn("rounded-xl px-2 py-2 sm:px-2.5", strong ? "bg-[color:var(--accent-primary-muted)]" : "control-surface")}>
+      <p className="truncate text-[9px] uppercase tracking-wide text-muted-foreground sm:text-[10px]">{label}</p>
+      <p className="text-base font-semibold leading-tight text-foreground sm:text-lg">{value}</p>
+    </div>
   );
 }

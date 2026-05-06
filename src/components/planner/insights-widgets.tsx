@@ -4,11 +4,13 @@ import { useMemo } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toTitleCase } from "@/lib/utils";
 import { buildGroceryBreakdown } from "@/lib/grocery";
+import { INGREDIENT_CATEGORIES } from "@/types/planner";
 import { usePlannerStore } from "@/store/planner-store";
 import { t } from "@/locales";
 
 const slots = ["breakfast", "lunch", "dinner", "snack"] as const;
 type ReadinessState = "easy" | "manageable" | "heavy";
+const COMPLEXITY_CATEGORIES = new Set(["Spices & Condiments", "Oils & Essentials", "Eggs / Meat"]);
 
 export function InsightsWidgets() {
   const plan = usePlannerStore((state) => state.weeklyPlan);
@@ -33,7 +35,10 @@ export function InsightsWidgets() {
       .flatMap((day) => slots.map((slot) => day[slot]))
       .flatMap((meal) => meal.ingredients);
     const grocery = buildGroceryBreakdown(allIngredients, pantrySelected, plan.profile);
-    const toBuyCategories = Object.values(grocery.toBuyByCategory).filter((items) => items.length > 0).length;
+    const activeToBuyCategories = Object.entries(grocery.toBuyByCategory)
+      .filter(([, items]) => items.length > 0)
+      .map(([category]) => category);
+    const toBuyCategories = activeToBuyCategories.length;
 
     const complianceDays = daily.filter((entry) => {
       const kcalGap = Math.abs(entry.kcal - targets.dailyCalories) / Math.max(targets.dailyCalories, 1);
@@ -71,7 +76,10 @@ export function InsightsWidgets() {
     const effortEase = Math.max(0, 100 - Math.max(0, avgPrepPerDay - 60) * 1.2);
     const readinessScore = Math.round(pantryCoverage * 0.46 + shoppingEase * 0.3 + effortEase * 0.24);
     const pantryBurden = Math.max(0, 100 - pantryCoverage);
-    const shoppingBurden = Math.round(Math.max(0, Math.min(100, grocery.summary.toBuy * 1.7 + toBuyCategories * 6)));
+    const categorySpread = (toBuyCategories / Math.max(INGREDIENT_CATEGORIES.length, 1)) * 100;
+    const complexityCategoryCount = activeToBuyCategories.filter((category) => COMPLEXITY_CATEGORIES.has(category)).length;
+    const complexityRatio = complexityCategoryCount / Math.max(COMPLEXITY_CATEGORIES.size, 1);
+    const shoppingBurden = Math.round(Math.max(0, Math.min(100, categorySpread * 0.72 + complexityRatio * 100 * 0.28)));
     const prepBurden = Math.round(Math.max(0, Math.min(100, Math.max(0, avgPrepPerDay - 45) * 1.6)));
 
     const readinessState: ReadinessState = readinessScore >= 75 ? "easy" : readinessScore >= 55 ? "manageable" : "heavy";
