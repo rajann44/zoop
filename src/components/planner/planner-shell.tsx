@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { GroceryList } from "@/components/planner/grocery-list";
+import { BodyMetricsSummary } from "@/components/planner/body-metrics-summary";
 import { InsightsWidgets } from "@/components/planner/insights-widgets";
 import { NutritionSummary } from "@/components/planner/nutrition-summary";
 import { PantryManager } from "@/components/planner/pantry-manager";
@@ -57,6 +58,7 @@ export function PlannerShell() {
           </section>
 
           <section className="space-y-3 sm:space-y-4">
+            <BodyMetricsSummary />
             <NutritionSummary />
             <InsightsWidgets />
             <WeeklyPlanSection />

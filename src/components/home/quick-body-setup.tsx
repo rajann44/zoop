@@ -48,15 +48,17 @@ export function QuickBodySetup() {
 
       <div className="space-y-3">
         <div className="space-y-1.5">
-          <Label className="text-sm">{t.home.quickSetup.sexLabel}</Label>
-          <SegmentedControl
-            value={profile.sex}
-            options={SEX_TYPES}
-            onChange={(value) => update("sex", value as UserProfile["sex"])}
-            getLabel={toTitleCase}
-            fullWidth={false}
-            compact
-          />
+          <div className="flex items-center gap-3">
+            <Label className="text-sm">{t.home.quickSetup.sexLabel}</Label>
+            <SegmentedControl
+              value={profile.sex}
+              options={SEX_TYPES}
+              onChange={(value) => update("sex", value as UserProfile["sex"])}
+              getLabel={toTitleCase}
+              fullWidth={false}
+              compact
+            />
+          </div>
         </div>
 
         <div className="space-y-1.5">

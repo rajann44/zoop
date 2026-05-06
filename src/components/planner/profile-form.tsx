@@ -1,34 +1,23 @@
 "use client";
 
-import { useState } from "react";
-import { ChevronDown } from "lucide-react";
 import { SAMPLE_PROFILES } from "@/data/sample-profiles";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { SegmentedControl } from "@/components/ui/segmented-control";
 import { Separator } from "@/components/ui/separator";
 import {
-  ACTIVITY_LEVELS,
   DIET_TYPES,
   GOALS,
   INDIAN_STATES,
   MEAL_STYLES,
   PROTEIN_FOCUS,
-  SEX_TYPES,
   type UserProfile,
 } from "@/types/planner";
 import { toTitleCase } from "@/lib/utils";
 import { usePlannerStore } from "@/store/planner-store";
 import { t } from "@/locales";
-
-const numberFieldConfig = [
-  { key: "age", label: t.planner.profileForm.fields.age, min: 15, max: 80, step: 1 },
-  { key: "weightKg", label: t.planner.profileForm.fields.weightKg, min: 35, max: 180, step: 1 },
-  { key: "heightCm", label: t.planner.profileForm.fields.heightCm, min: 130, max: 220, step: 1 },
-] as const;
 
 export function ProfileForm() {
   const profile = usePlannerStore((state) => state.profile);
@@ -36,7 +25,6 @@ export function ProfileForm() {
   const loadSampleProfile = usePlannerStore((state) => state.loadSampleProfile);
   const regenerate = usePlannerStore((state) => state.regenerate);
   const isGenerating = usePlannerStore((state) => state.isGenerating);
-  const [showAdvanced, setShowAdvanced] = useState(false);
 
   const update = <K extends keyof UserProfile>(key: K, value: UserProfile[K]) => {
     setProfile({ ...profile, [key]: value });
@@ -146,68 +134,7 @@ export function ProfileForm() {
 
           <Separator />
 
-          <section className="space-y-2 pb-24">
-            <button
-              type="button"
-              className="flex w-full items-center justify-between rounded-lg px-1 py-1 text-left"
-              onClick={() => setShowAdvanced((current) => !current)}
-              aria-expanded={showAdvanced}
-              aria-controls="advanced-settings"
-            >
-                <span>
-                <span className="block text-sm font-medium">{t.planner.profileForm.advancedSettings}</span>
-                <span className="block text-xs text-muted-foreground">{t.planner.profileForm.advancedHint}</span>
-              </span>
-              <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${showAdvanced ? "rotate-180" : ""}`} />
-            </button>
-
-            {showAdvanced ? (
-              <div id="advanced-settings" className="surface-inset space-y-2.5 rounded-xl p-3">
-                <Field label={t.planner.profileForm.fields.sex} id="sex">
-                  <SegmentedControl
-                    id="sex"
-                    value={profile.sex}
-                    options={SEX_TYPES}
-                    onChange={(value) => update("sex", value as UserProfile["sex"])}
-                    getLabel={toTitleCase}
-                    fullWidth={false}
-                    compact
-                  />
-                </Field>
-
-                <Field label={t.planner.profileForm.fields.activity} id="activityLevel">
-                  <Select value={profile.activityLevel} onValueChange={(value) => update("activityLevel", value as UserProfile["activityLevel"])}>
-                    <SelectTrigger id="activityLevel">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {ACTIVITY_LEVELS.map((activity) => (
-                        <SelectItem key={activity} value={activity}>
-                          {toTitleCase(activity)}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </Field>
-
-                <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
-                  {numberFieldConfig.map((field) => (
-                    <Field key={field.key} label={field.label} id={field.key}>
-                      <Input
-                        id={field.key}
-                        type="number"
-                        value={profile[field.key]}
-                        min={field.min}
-                        max={field.max}
-                        step={field.step}
-                        onChange={(event) => update(field.key, Number(event.target.value) as UserProfile[typeof field.key])}
-                      />
-                    </Field>
-                  ))}
-                </div>
-              </div>
-            ) : null}
-          </section>
+          <div className="pb-24" />
         </div>
 
         <div className="shrink-0 border-t border-[color:var(--border-glass)] bg-[color:var(--surface-glass-header)]/70 px-4 py-3 backdrop-blur-xl shadow-[inset_0_1px_0_rgb(255_255_255_/_0.52)] sm:px-5">

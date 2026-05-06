@@ -54,8 +54,6 @@ export const en = {
       sampleProfileHint: "Prefills values to preview faster.",
       samplePlaceholder: "Choose sample",
       preferences: "Preferences",
-      advancedSettings: "Advanced settings",
-      advancedHint: "Optional body metrics for finer targets",
       generating: "Generating plan...",
       generatePlan: "Generate weekly plan",
       fields: {
@@ -75,6 +73,11 @@ export const en = {
         maintenance: "Maintain",
         "muscle gain": "Gain",
       } as Record<Goal, string>,
+    },
+    bodyMetrics: {
+      title: "Body metrics",
+      description: "Read-only values from homepage setup. Edit there if needed.",
+      editCta: "Edit on home",
     },
     nutrition: {
       title: "Nutrition progress",
