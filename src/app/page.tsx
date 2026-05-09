@@ -1,6 +1,5 @@
 import { QuickBodySetup } from "@/components/home/quick-body-setup";
 import { PreviewSampleWeekButton } from "@/components/home/preview-sample-week-button";
-import { ThemeToggle } from "@/components/theme-toggle";
 import { TransitionLink } from "@/components/ui/transition-link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { t } from "@/locales";
@@ -9,12 +8,11 @@ export default function Home() {
   return (
     <div className="liquid-canvas min-h-screen">
       <header className="px-3 pt-3 sm:px-4 sm:pt-4">
-        <div className="glass-header mx-auto flex max-w-6xl items-center justify-between rounded-[22px] px-4 py-3 sm:px-5">
+        <div className="glass-header mx-auto flex max-w-6xl items-center rounded-[22px] px-4 py-3 sm:px-5">
           <TransitionLink href="/planner" className="rounded-lg px-1 py-0.5 transition-opacity hover:opacity-85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
             <h1 className="font-serif text-xl">zoop</h1>
             <p className="text-sm text-muted-foreground">{t.common.appTagline}</p>
           </TransitionLink>
-          <ThemeToggle />
         </div>
       </header>
 

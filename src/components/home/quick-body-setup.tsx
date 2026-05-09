@@ -157,7 +157,7 @@ export function QuickBodySetup() {
         <Button
           asChild
           onClick={() => saveHomeBodyProfile(profile)}
-          className="hover:shadow-[0_0_0_1px_rgb(10_122_255_/_0.28),0_12px_28px_rgb(10_122_255_/_0.42)] dark:hover:shadow-[0_0_0_1px_rgb(92_168_255_/_0.38),0_12px_28px_rgb(92_168_255_/_0.36)]"
+          className="hover:shadow-[0_0_0_1px_rgb(10_122_255_/_0.28),0_12px_28px_rgb(10_122_255_/_0.42)]"
         >
           <TransitionLink href="/planner">
             {t.home.quickSetup.continueCta}

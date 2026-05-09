@@ -335,8 +335,8 @@ function classifyTarget(value: number, target: number, tolerance: number) {
 
 function barTone(state: "on" | "below" | "above") {
   if (state === "on") return "w-full rounded-sm bg-[color:var(--accent-primary)]";
-  if (state === "below") return "w-full rounded-sm bg-amber-500/75 dark:bg-amber-400/70";
-  return "w-full rounded-sm bg-rose-500/75 dark:bg-rose-400/70";
+  if (state === "below") return "w-full rounded-sm bg-amber-500/75";
+  return "w-full rounded-sm bg-rose-500/75";
 }
 
 function formatDelta(value: number) {
